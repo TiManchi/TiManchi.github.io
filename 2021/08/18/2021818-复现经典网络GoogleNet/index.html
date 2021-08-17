@@ -1,0 +1,563 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  
+  <title>复现经典网络GoogleNet - 个人博客</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.7.2/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.8.11","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":"N4I46QL8L9ol3F38JIXzS2Hp-gzGzoHsz","app_key":"CtCUltORnNhoV1Jn60e2I8gO","server_url":"https://n4i46ql8.lc-cn-n1-shared.com"}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>TiManchi</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/example.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="复现经典网络GoogleNet">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2021-08-18 08:00" pubdate>
+        2021年8月18日 早上
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      2k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      26
+       分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">复现经典网络GoogleNet</h1>
+            
+            <div class="markdown-body">
+              <h2 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h2><p>GoogLeNet由谷歌团队与众多大学合作研发，发表于论文《Going deeper with convolutions》，受到NiN网络的启发，谷歌引入了一种全新的网络架 构：Inception block，并将使用Inception V1的网络架构称为GoogLeNet（虽然从名字上来看致敬了 LeNet5算法，但GoogLeNet已经基本看不出LeNet那种经典的卷积+池化+全连接的结构了）。 net = NiN() net(data).shape summary(net,(10,3,32,32))  Inception直译是“起始时间”，也是电影《盗梦空间》的英文名称。GoogLeNet团队的思路是：使用普通卷积、池化层这些稠密元素组成 的块去无限逼近（approximate）一个稀疏架构，从而构造一种参数量与稀疏网络相似的稠密网络。这种思路的核心不是通过减少连接、减少扫描次数等“制造空隙”的方式来降低稠密网络的参数量，而是直接在架构设计上找出一种参数量非常少的稠密网络。</p>
+<h2 id="InceptionV1"><a href="#InceptionV1" class="headerlink" title="InceptionV1"></a>InceptionV1</h2><p>我们来看Inception V1的具体结构。与VGG和AlexNet中从上向下串联卷积层的方式不同， Inception块使用了卷积层、池化层并联的方式。在一个Inception块中存在4条线路，每条线路可以被叫做一个分枝（branch）：第一条线路上只有一个1x1卷积层，只负责降低通道数；第二条路线由一个1x1 卷积层和一个3x3卷积层组成，本质上是希望使用3x3卷积核进行特征提取，但先使用1x1卷积核降低通 道数以此来降低参数量和计算量（降低模型的复杂度）；第三条线路由一个1x1卷积层和一个5x5卷积层 组成，其基本思路与第二条线路一致；最后一条线路由一个3x3池化层和一个1x1卷积层组成，将池化也当做一种特征提取的方式，并在池化后使用1x1卷积层来降低通道数。不难注意到，所有的线路都使用 了巧妙的参数组合，让特征图的尺寸保持不变，因此在四条线路分别输出结果之后，Inception块将四种 方式生成的特征图拼接在一起，形成一组完整的特征图，这组完整的特征图与普通卷积生成的特征图在 结构、计算方式上并无区别，因此可以被轻松地输入任意卷积、池化或全连接的结构。在论文中， GoogLeNet自然是使用了224x224的ImageNet数据集，不过在下面的架构图中我们使用了尺寸较小的特征图进行表示。</p>
+<p><img src="https://wyr-image.oss-cn-beijing.aliyuncs.com/img/InceptionV1.PNG" srcset="/img/loading.gif" lazyload alt=""></p>
+<p>虽然我们不知道谷歌使用的网络架构构造算法具体是如何得出Inception架构的，但这种架构的优势是显而易见的： </p>
+<ul>
+<li>首先，同时使用多种卷积核可以确保各种类型和层次的信息都被提取出来。在普通的卷积网络中，我们必须选择不同尺寸的过滤器（卷积核、池化核）对图像进行特征提取。1x1卷积核可以最大程度提取像 素与像素之间的位置信息，尺寸较大的卷积核则更多可以提取相邻像素之间的联系信息，最大池化层则 可以提取出局部中最关键的信息，但在串联结构中，对同一张图片/特征图，我们只能选择一个过滤器来 使用，这意味着我们很可能会损失其他过滤器可以提取出的信息。而在Inception中，我们一次性使用了 全部可能的方式，因此无需再去考虑究竟哪一种提取方式才是最好的，在输出的时候，Inception将所有 核提取出来的特征图堆积整合，确保提取出的信息是最全面的。 </li>
+<li>其次，并联的卷积池化层计算效率更高。串联的卷积计算必须一层一层进行，但并联的卷积/池化层可以 同时进行计算，这种将特征提取的过程并行处理的方式可以极速加快计算的运行效率。同时，由于每个 元素之间都是稠密连接，并不存在任何类似于分组卷积那样减少连接数量的操作，使得inception可以高 效利用现有硬件在稠密矩阵上的计算性能。 </li>
+<li>大量使用1x1卷积层来整合信息，既实现了“聚类信息”又实现了大规模降低参数量，让特征图数量实现了前所未有的增长。出现在每一条线路的1x1卷积层承担了调整特征图数目的作用，它可以自由将特征图上的信息聚合为更少的特征图，让特征图信息之间的聚合更加“密集”。同时，每个1x1卷积核之后都跟着 ReLU激活函数，这增加了一次使用非线性方式处理数据的机会，某种程度上也是增加了网络的“深度”。 除此之外，1x1卷积层最重要的作用是控制住了整体的参数量，从而解放了特征图的数量。这一点可以 从VGG和GoogLeNet整体架构的参数量上轻松看出来。</li>
+</ul>
+<h2 id="复现GoogleNet"><a href="#复现GoogleNet" class="headerlink" title="复现GoogleNet"></a>复现GoogleNet</h2><p><strong>架构图</strong></p>
+<p><img src="https://wyr-image.oss-cn-beijing.aliyuncs.com/img/GoogleNet.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p><strong>导库</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> torch<br><span class="hljs-keyword">from</span> torch <span class="hljs-keyword">import</span> nn<br><span class="hljs-keyword">from</span> torchinfo <span class="hljs-keyword">import</span> summary<br></code></pre></td></tr></table></figure>
+<p><strong>基本卷积模块</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">BasicConv2d</span>(<span class="hljs-params">nn.Module</span>):</span><br>    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">__init__</span>(<span class="hljs-params">self,in_channels, out_channels,**kwargs</span></span><br><span class="hljs-params"><span class="hljs-function">                </span>):</span><br>        <span class="hljs-built_in">super</span>().__init__()<br>        self.conv = nn.Sequential(nn.Conv2d(in_channels, out_channels, bias=<span class="hljs-literal">False</span>, **kwargs)<br>                                 ,nn.BatchNorm2d(out_channels)<br>                                 ,nn.ReLU(inplace=<span class="hljs-literal">True</span>))<br>    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">forward</span>(<span class="hljs-params">self,x</span>):</span><br>        x = self.conv(x)<br>        <span class="hljs-keyword">return</span> x<br></code></pre></td></tr></table></figure>
+<p><strong>Inception 块</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Inception</span>(<span class="hljs-params">nn.Module</span>):</span><br>    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">__init__</span>(<span class="hljs-params">self</span></span><br><span class="hljs-params"><span class="hljs-function">                 ,in_channels : <span class="hljs-built_in">int</span></span></span><br><span class="hljs-params"><span class="hljs-function">                 ,ch1x1 : <span class="hljs-built_in">int</span></span></span><br><span class="hljs-params"><span class="hljs-function">                 ,ch3x3red : <span class="hljs-built_in">int</span></span></span><br><span class="hljs-params"><span class="hljs-function">                 ,ch3x3 : <span class="hljs-built_in">int</span></span></span><br><span class="hljs-params"><span class="hljs-function">                 ,ch5x5red : <span class="hljs-built_in">int</span></span></span><br><span class="hljs-params"><span class="hljs-function">                 ,ch5x5 : <span class="hljs-built_in">int</span></span></span><br><span class="hljs-params"><span class="hljs-function">                 ,pool_proj : <span class="hljs-built_in">int</span></span></span><br><span class="hljs-params"><span class="hljs-function">                </span>):</span><br>        <span class="hljs-built_in">super</span>().__init__()<br>        <span class="hljs-comment">#1x1</span><br>        self.branch1 = BasicConv2d(in_channels,ch1x1,kernel_size=<span class="hljs-number">1</span>)<br>        <span class="hljs-comment">#1x1 + 3x3</span><br>        self.branch2 = nn.Sequential(BasicConv2d(in_channels, ch3x3red, kernel_size=<span class="hljs-number">1</span>)<br>                                     ,BasicConv2d(ch3x3red, ch3x3, kernel_size=<span class="hljs-number">3</span>,padding=<span class="hljs-number">1</span>))<br>        <span class="hljs-comment">#1x1 + 5x5</span><br>        self.branch3 = nn.Sequential(BasicConv2d(in_channels, ch5x5red, kernel_size=<span class="hljs-number">1</span>)<br>                                     ,BasicConv2d(ch5x5red, ch5x5, kernel_size=<span class="hljs-number">5</span>, padding=<span class="hljs-number">2</span>))<br>        <span class="hljs-comment">#pool + 1x1</span><br>        self.branch4 = nn.Sequential(nn.MaxPool2d(kernel_size=<span class="hljs-number">3</span>,stride=<span class="hljs-number">1</span>, padding=<span class="hljs-number">1</span>,ceil_mode=<span class="hljs-literal">True</span>)<br>                                    ,BasicConv2d(in_channels,pool_proj,kernel_size=<span class="hljs-number">1</span>))<br>    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">forward</span>(<span class="hljs-params">self,x</span>):</span><br>        branch1 = self.branch1(x) <span class="hljs-comment">#28x28,ch1x1</span><br>        branch2 = self.branch2(x) <span class="hljs-comment">#28x28,ch3x3</span><br>        branch3 = self.branch3(x) <span class="hljs-comment">#28x28,ch5x5</span><br>        branch4 = self.branch4(x) <span class="hljs-comment">#28x28,pool_proj</span><br>        outputs = [branch1, branch2, branch3, branch4]<br>        <span class="hljs-keyword">return</span> torch.cat(outputs, <span class="hljs-number">1</span>) <span class="hljs-comment">#合并</span><br></code></pre></td></tr></table></figure>
+<p><strong>辅助分类器</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">AuxClf</span>(<span class="hljs-params">nn.Module</span>):</span><br>    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">__init__</span>(<span class="hljs-params">self,in_channels : <span class="hljs-built_in">int</span>, num_classes : <span class="hljs-built_in">int</span>, **kwargs</span>):</span><br>        <span class="hljs-built_in">super</span>().__init__()<br>        self.feature_ = nn.Sequential(nn.AvgPool2d(kernel_size=<span class="hljs-number">5</span>,stride=<span class="hljs-number">3</span>)<br>                                     ,BasicConv2d(in_channels,<span class="hljs-number">128</span>, kernel_size=<span class="hljs-number">1</span>))<br>        self.clf_ = nn.Sequential(nn.Linear(<span class="hljs-number">4</span>*<span class="hljs-number">4</span>*<span class="hljs-number">128</span>, <span class="hljs-number">1024</span>)<br>                                 ,nn.ReLU(inplace=<span class="hljs-literal">True</span>)<br>                                 ,nn.Dropout(<span class="hljs-number">0.7</span>)<br>                                 ,nn.Linear(<span class="hljs-number">1024</span>,num_classes))<br>    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">forward</span>(<span class="hljs-params">self,x</span>):</span><br>        x = self.feature_(x)<br>        x = x.view(-<span class="hljs-number">1</span>,<span class="hljs-number">4</span>*<span class="hljs-number">4</span>*<span class="hljs-number">128</span>)<br>        x = self.clf_(x)<br>        <span class="hljs-keyword">return</span> x<br></code></pre></td></tr></table></figure>
+<p><strong>网络结构</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">GoogLeNet</span>(<span class="hljs-params">nn.Module</span>):</span><br>    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">__init__</span>(<span class="hljs-params">self,num_classes: <span class="hljs-built_in">int</span> = <span class="hljs-number">1000</span>, blocks = <span class="hljs-literal">None</span></span>):</span><br>        <span class="hljs-built_in">super</span>().__init__()<br>        <br>        <span class="hljs-keyword">if</span> blocks <span class="hljs-keyword">is</span> <span class="hljs-literal">None</span>:<br>            blocks = [BasicConv2d, Inception, AuxClf]<br>        conv_block = blocks[<span class="hljs-number">0</span>]<br>        inception_block = blocks[<span class="hljs-number">1</span>]<br>        aux_clf_block = blocks[<span class="hljs-number">2</span>]<br>        <br>        <span class="hljs-comment">#block1</span><br>        self.conv1 = conv_block(<span class="hljs-number">3</span>,<span class="hljs-number">64</span>,kernel_size=<span class="hljs-number">7</span>,stride=<span class="hljs-number">2</span>,padding = <span class="hljs-number">3</span>)<br>        self.maxpool1 = nn.MaxPool2d(kernel_size=<span class="hljs-number">3</span>,stride=<span class="hljs-number">2</span>,ceil_mode = <span class="hljs-literal">True</span>)<br>        <br>        <span class="hljs-comment">#block2</span><br>        self.conv2 = conv_block(<span class="hljs-number">64</span>,<span class="hljs-number">64</span>,kernel_size=<span class="hljs-number">1</span>)<br>        self.conv3 = conv_block(<span class="hljs-number">64</span>,<span class="hljs-number">192</span>,kernel_size=<span class="hljs-number">3</span>, padding = <span class="hljs-number">1</span>)<br>        self.maxpool2 = nn.MaxPool2d(kernel_size=<span class="hljs-number">3</span>,stride=<span class="hljs-number">2</span>,ceil_mode = <span class="hljs-literal">True</span>)<br>        <br>        <span class="hljs-comment">#block3</span><br>        self.inception3a = inception_block(<span class="hljs-number">192</span>,<span class="hljs-number">64</span>,<span class="hljs-number">96</span>,<span class="hljs-number">128</span>,<span class="hljs-number">16</span>,<span class="hljs-number">32</span>,<span class="hljs-number">32</span>)<br>        self.inception3b = inception_block(<span class="hljs-number">256</span>,<span class="hljs-number">128</span>,<span class="hljs-number">128</span>,<span class="hljs-number">192</span>,<span class="hljs-number">32</span>,<span class="hljs-number">96</span>,<span class="hljs-number">64</span>)<br>        self.maxpool3 = nn.MaxPool2d(kernel_size=<span class="hljs-number">3</span>,stride=<span class="hljs-number">2</span>,ceil_mode = <span class="hljs-literal">True</span>)<br><br>        <br>        <span class="hljs-comment">#block4 </span><br>        self.inception4a = inception_block(<span class="hljs-number">480</span>,<span class="hljs-number">192</span>,<span class="hljs-number">96</span>,<span class="hljs-number">208</span>,<span class="hljs-number">16</span>,<span class="hljs-number">48</span>,<span class="hljs-number">64</span>)<br>        self.inception4b = inception_block(<span class="hljs-number">512</span>,<span class="hljs-number">160</span>,<span class="hljs-number">112</span>,<span class="hljs-number">224</span>,<span class="hljs-number">24</span>,<span class="hljs-number">64</span>,<span class="hljs-number">64</span>)<br>        self.inception4c = inception_block(<span class="hljs-number">512</span>,<span class="hljs-number">128</span>,<span class="hljs-number">128</span>,<span class="hljs-number">256</span>,<span class="hljs-number">24</span>,<span class="hljs-number">64</span>,<span class="hljs-number">64</span>)<br>        self.inception4d = inception_block(<span class="hljs-number">512</span>,<span class="hljs-number">112</span>,<span class="hljs-number">144</span>,<span class="hljs-number">288</span>,<span class="hljs-number">32</span>,<span class="hljs-number">64</span>,<span class="hljs-number">64</span>)<br>        self.inception4e = inception_block(<span class="hljs-number">528</span>,<span class="hljs-number">256</span>,<span class="hljs-number">150</span>,<span class="hljs-number">320</span>,<span class="hljs-number">32</span>,<span class="hljs-number">128</span>,<span class="hljs-number">128</span>)<br>        self.maxpool4 = nn.MaxPool2d(kernel_size=<span class="hljs-number">3</span>,stride=<span class="hljs-number">2</span>,ceil_mode = <span class="hljs-literal">True</span>)<br>        <br>        <span class="hljs-comment">#block5</span><br>        self.inception5a = inception_block(<span class="hljs-number">832</span>,<span class="hljs-number">256</span>,<span class="hljs-number">160</span>,<span class="hljs-number">320</span>,<span class="hljs-number">32</span>,<span class="hljs-number">128</span>,<span class="hljs-number">128</span>)<br>        self.inception5b = inception_block(<span class="hljs-number">832</span>,<span class="hljs-number">384</span>,<span class="hljs-number">192</span>,<span class="hljs-number">384</span>,<span class="hljs-number">48</span>,<span class="hljs-number">128</span>,<span class="hljs-number">128</span>)<br>        <br>        <span class="hljs-comment">#clf</span><br>        self.avgpool = nn.AdaptiveAvgPool2d((<span class="hljs-number">1</span>,<span class="hljs-number">1</span>)) <span class="hljs-comment">#我需要的输出的特征图尺寸是多少</span><br>        self.dropout = nn.Dropout(<span class="hljs-number">0.4</span>)<br>        self.fc = nn.Linear(<span class="hljs-number">1024</span>,num_classes)<br>        <br>        <span class="hljs-comment">#auxclf</span><br>        self.aux1 = aux_clf_block(<span class="hljs-number">512</span>, num_classes) <span class="hljs-comment">#4a</span><br>        self.aux2 = aux_clf_block(<span class="hljs-number">528</span>, num_classes) <span class="hljs-comment">#4d</span><br>    <br>    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">forward</span>(<span class="hljs-params">self,x</span>):</span><br>        <span class="hljs-comment">#block1</span><br>        x = self.maxpool1(self.conv1(x))<br>        <br>        <span class="hljs-comment">#block2</span><br>        x = self.maxpool2(self.conv3(self.conv2(x)))<br>        <br>        <span class="hljs-comment">#block3</span><br>        x = self.inception3a(x)<br>        x = self.inception3b(x)<br>        x = self.maxpool3(x)<br>        <br>        <span class="hljs-comment">#block4</span><br>        x = self.inception4a(x)<br>        aux1 = self.aux1(x)<br>        <br>        x = self.inception4b(x)<br>        x = self.inception4c(x)<br>        x = self.inception4d(x)<br>        aux2 = self.aux2(x)<br>        <br>        x = self.inception4e(x)<br>        x = self.maxpool4(x)<br>        <br>        <span class="hljs-comment">#block5</span><br>        x = self.inception5a(x)<br>        x = self.inception5b(x)<br>        <br>        <span class="hljs-comment">#clf</span><br>        x = self.avgpool(x) <span class="hljs-comment">#在这个全局平均池化之后，特征图尺寸就变成了1x1</span><br>        x = torch.flatten(x,<span class="hljs-number">1</span>)<br>        x = self.dropout(x)<br>        x = self.fc(x)<br>        <br>        <span class="hljs-keyword">return</span> x, aux2, aux1<br></code></pre></td></tr></table></figure>
+<p><strong>测试</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs python">data = torch.ones(<span class="hljs-number">10</span>,<span class="hljs-number">3</span>,<span class="hljs-number">224</span>,<span class="hljs-number">224</span>)<br></code></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs python">net = GoogLeNet(num_classes=<span class="hljs-number">1000</span>)<br></code></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs python">fc2, fc1, fc0 = net(data)<br></code></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs python">summary(net,(<span class="hljs-number">10</span>,<span class="hljs-number">3</span>,<span class="hljs-number">224</span>,<span class="hljs-number">224</span>),device=<span class="hljs-string">&quot;cpu&quot;</span>,depth=<span class="hljs-number">1</span>)<br></code></pre></td></tr></table></figure>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/">深度学习</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/">深度学习</a>
+                    
+                      <a class="hover-with-bg" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89/">计算机视觉</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2021/08/17/2021817-%E5%A4%8D%E7%8E%B0%E7%BB%8F%E5%85%B8%E7%BD%91%E7%BB%9CVGG16/">
+                        <span class="hidden-mobile">复现经典网络VGG16</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <article class="comments" id="comments" lazyload>
+                
+                  
+                
+                
+  <div id="valine"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#valine', function() {
+      Fluid.utils.createScript('https://cdn.jsdelivr.net/npm/valine@1.4.14/dist/Valine.min.js', function() {
+        var options = Object.assign(
+          {"appId":"N4I46QL8L9ol3F38JIXzS2Hp-gzGzoHsz","appKey":"CtCUltORnNhoV1Jn60e2I8gO","placeholder":"说点什么","path":"window.location.pathname","avatar":"retro","meta":["nick","mail","link"],"pageSize":10,"lang":"zh-CN","highlight":false,"recordIP":false,"serverURLs":"","emojiCDN":null,"emojiMaps":null,"enableQQ":false,"requiredFields":[]},
+          {
+            el: "#valine",
+            path: window.location.pathname
+          }
+        )
+        new Valine(options);
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+              </article>
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- 不蒜子统计PV -->
+        <span id="busuanzi_container_site_pv" style="display: none">
+            总访问量 
+            <span id="busuanzi_value_site_pv"></span>
+             次
+          </span>
+      
+      
+        <!-- 不蒜子统计UV -->
+        <span id="busuanzi_container_site_uv" style="display: none">
+            总访客数 
+            <span id="busuanzi_value_site_uv"></span>
+             人
+          </span>
+      
+    
+  </div>
+
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.3/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.1/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.8/dist/clipboard.min.js" ></script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+  
+
+  
+    <!-- MathJax -->
+    <script>
+      MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']]
+        },
+        options: {
+          renderActions: {
+            findScript: [10, doc => {
+              document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+                const display = !!node.type.match(/; *mode=display/);
+                const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+                const text = document.createTextNode('');
+                node.parentNode.replaceChild(text, node);
+                math.start = { node: text, delim: '', n: 0 };
+                math.end = { node: text, delim: '', n: 0 };
+                doc.math.push(math);
+              });
+            }, '', false],
+            insertedScript: [200, () => {
+              document.querySelectorAll('mjx-container').forEach(node => {
+                let target = node.parentNode;
+                if (target.nodeName.toLowerCase() === 'li') {
+                  target.parentNode.classList.add('has-jax');
+                }
+              });
+            }, '', false]
+          }
+        }
+      };
+    </script>
+
+    <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.1.4/es5/tex-svg.js" ></script>
+
+  
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>
