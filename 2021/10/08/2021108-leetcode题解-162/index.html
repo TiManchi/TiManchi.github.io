@@ -18,7 +18,7 @@
   <meta name="author" content="John Doe">
   <meta name="keywords" content="">
   
-  <title>leetcode题解-34 - 个人博客</title>
+  <title>leetcode题解-162 - 个人博客</title>
 
   <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" />
 
@@ -175,7 +175,7 @@
       <div class="full-bg-img">
         <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
           <div class="page-header text-center fade-in-up">
-            <span class="h2" id="subtitle" title="leetcode题解-34">
+            <span class="h2" id="subtitle" title="leetcode题解-162">
               
             </span>
 
@@ -185,8 +185,8 @@
   
     <span class="post-meta">
       <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-      <time datetime="2021-10-08 10:37" pubdate>
-        2021年10月8日 上午
+      <time datetime="2021-10-08 14:22" pubdate>
+        2021年10月8日 下午
       </time>
     </span>
   
@@ -197,7 +197,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      537 字
+      176 字
     </span>
   
 
@@ -207,7 +207,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      8
+      2
        分钟
     </span>
   
@@ -237,35 +237,14 @@
         <div class="py-5" id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">leetcode题解-34</h1>
+            <h1 style="display: none">leetcode题解-162</h1>
             
             <div class="markdown-body">
               <h2 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h2><p><strong>题目</strong></p>
-<p><a href="(https://leetcode-cn.com/problems/find-first-and-last-position-of-element-in-sorted-array/">在排序数组中查找元素的第一个和最后一个位置</a>)</p>
-<p><strong>思路</strong></p>
-<p>找的是数组中第一个等于target的位置（左边界）和第一个大于target的位置-1 （右边界）</p>
-<h2 id="寻找左边界"><a href="#寻找左边界" class="headerlink" title="寻找左边界"></a>寻找左边界</h2><p>找到一个最终切分点 L，需要满足 [0, L) 区间里面的元素都必须小于 target，而 [L, ~) 右边的元素都 &gt;= target。左边界操作原则如下：</p>
-<ul>
-<li><p>查找的区间一直是一个左开右闭区间 [L, R)；</p>
-</li>
-<li><p>每次总是把 &gt;= target 的区间扔掉，大于等于的不要了，然后设置 R = M；</p>
-</li>
-<li><p>当最后的区间元素都小于 target 的时候，移动 L，小于的也不要了，然后设置 L = M + 1。</p>
-</li>
-</ul>
-<p>代码如下</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">var</span> lowerBound=<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">nums,target</span>)</span>&#123;<br>    <span class="hljs-keyword">let</span> left=<span class="hljs-number">0</span>,right=nums.length<br>    <span class="hljs-keyword">while</span>(left&lt;right)&#123;<br>        <span class="hljs-keyword">let</span> mid=<span class="hljs-built_in">Math</span>.floor(left+(right-left)/<span class="hljs-number">2</span>)<br>        <span class="hljs-keyword">if</span>(nums[mid]&lt;target)&#123;<br>            left=mid+<span class="hljs-number">1</span><br>        &#125;<span class="hljs-keyword">else</span>&#123;<br>            right=mid<br>        &#125;<br>    &#125;<br>    <span class="hljs-keyword">return</span> left<br>&#125;<br></code></pre></td></tr></table></figure>
-<h2 id="寻找右边界"><a href="#寻找右边界" class="headerlink" title="寻找右边界"></a>寻找右边界</h2><p>找一个切分点 y，使得所有 [0, y) 左区间里面的元素 &lt;= target</p>
-<p>target &lt; 所有 [y, ~) 右区间里面的元素，右边界二分策略</p>
-<ul>
-<li><p>当 A[M] &lt;= target 的时候，需要把 [L, M] 区间扔掉。此时需要设置 L = M + 1；</p>
-</li>
-<li><p>当 A[M] &gt; target 的时候，需要把 (M, R) 区间扔掉。此时需要设置 R = M。</p>
-</li>
-</ul>
-<p>代码如下</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">var</span> upperBound=<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">nums,target</span>)</span>&#123;<br>    <span class="hljs-keyword">let</span> left=<span class="hljs-number">0</span>,right=nums.length<br>    <span class="hljs-keyword">while</span>(left&lt;right)&#123;<br>        <span class="hljs-keyword">let</span> mid=<span class="hljs-built_in">Math</span>.floor(left+(right-left)/<span class="hljs-number">2</span>)<br>        <span class="hljs-keyword">if</span>(nums[mid]&lt;=target)&#123;<br>            left=mid+<span class="hljs-number">1</span><br>        &#125;<span class="hljs-keyword">else</span>&#123;<br>            right=mid<br>        &#125;<br>    &#125;<br>    <span class="hljs-keyword">return</span> left<br>&#125;<br></code></pre></td></tr></table></figure>
-<h2 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@param <span class="hljs-type">&#123;number[]&#125;</span> <span class="hljs-variable">nums</span></span></span><br><span class="hljs-comment"> * <span class="hljs-doctag">@param <span class="hljs-type">&#123;number&#125;</span> <span class="hljs-variable">target</span></span></span><br><span class="hljs-comment"> * <span class="hljs-doctag">@return <span class="hljs-type">&#123;number[]&#125;</span></span></span><br><span class="hljs-comment"> */</span><br><br><span class="hljs-keyword">var</span> lowerBound=<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">nums,target</span>)</span>&#123;<br>    <span class="hljs-keyword">let</span> left=<span class="hljs-number">0</span>,right=nums.length<br>    <span class="hljs-keyword">while</span>(left&lt;right)&#123;<br>        <span class="hljs-keyword">let</span> mid=<span class="hljs-built_in">Math</span>.floor(left+(right-left)/<span class="hljs-number">2</span>)<br>        <span class="hljs-keyword">if</span>(nums[mid]&lt;target)&#123;<br>            left=mid+<span class="hljs-number">1</span><br>        &#125;<span class="hljs-keyword">else</span>&#123;<br>            right=mid<br>        &#125;<br>    &#125;<br>    <span class="hljs-keyword">return</span> left<br>&#125;<br><span class="hljs-keyword">var</span> upperBound=<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">nums,target</span>)</span>&#123;<br>    <span class="hljs-keyword">let</span> left=<span class="hljs-number">0</span>,right=nums.length<br>    <span class="hljs-keyword">while</span>(left&lt;right)&#123;<br>        <span class="hljs-keyword">let</span> mid=<span class="hljs-built_in">Math</span>.floor(left+(right-left)/<span class="hljs-number">2</span>)<br>        <span class="hljs-keyword">if</span>(nums[mid]&lt;=target)&#123;<br>            left=mid+<span class="hljs-number">1</span><br>        &#125;<span class="hljs-keyword">else</span>&#123;<br>            right=mid<br>        &#125;<br>    &#125;<br>    <span class="hljs-keyword">return</span> left<br>&#125;<br><span class="hljs-keyword">var</span> searchRange = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">nums, target</span>) </span>&#123;<br>    <span class="hljs-keyword">let</span> ans = [-<span class="hljs-number">1</span>, -<span class="hljs-number">1</span>]<br>    <span class="hljs-keyword">const</span> leftIdx = lowerBound(nums, target)<br>    <span class="hljs-keyword">const</span> rightIdx = upperBound(nums, target)-<span class="hljs-number">1</span><br>    <span class="hljs-keyword">if</span> (leftIdx &lt;= rightIdx &amp;&amp; rightIdx &lt; nums.length &amp;&amp; nums[leftIdx] === target &amp;&amp; nums[rightIdx] === target) &#123;<br>        ans = [leftIdx, rightIdx]<br>    &#125; <br>    <span class="hljs-keyword">return</span> ans<br>&#125;;<br></code></pre></td></tr></table></figure>
+<p><a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/find-peak-element/">寻找峰值</a></p>
+<p>思路</p>
+<p>对于任意一点与其相邻的节点，沿着递增一侧的方向一定能够找到一个峰值</p>
+<h2 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@param <span class="hljs-type">&#123;number[]&#125;</span> <span class="hljs-variable">nums</span></span></span><br><span class="hljs-comment"> * <span class="hljs-doctag">@return <span class="hljs-type">&#123;number&#125;</span></span></span><br><span class="hljs-comment"> */</span><br><span class="hljs-comment">/*</span><br><span class="hljs-comment">比较mid与mid+1位置上值的大小，如果mid值较大，</span><br><span class="hljs-comment">则[left, mid]一定有峰值，反之[mid+1, right]一定有峰值。*/</span><br><span class="hljs-keyword">var</span> findPeakElement = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">nums</span>) </span>&#123;<br>    <span class="hljs-keyword">let</span> left = <span class="hljs-number">0</span>;<br>    <span class="hljs-keyword">let</span> right = nums.length - <span class="hljs-number">1</span>;<br>    <span class="hljs-keyword">while</span> (left &lt; right) &#123;<br>      <span class="hljs-keyword">const</span> mid = <span class="hljs-built_in">Math</span>.floor(left+(right-left)/<span class="hljs-number">2</span>);<br>      <span class="hljs-comment">// 比较mid与mid+1位置上值的大小，如果mid位置较大，则mid左侧一定有峰值，反之mid+1右侧一定有峰值。</span><br>      <span class="hljs-keyword">if</span> (nums[mid] &lt;= nums[mid + <span class="hljs-number">1</span>]) &#123;<br>        left = mid + <span class="hljs-number">1</span>;<br>      &#125; <span class="hljs-keyword">else</span> &#123;<br>        right = mid;<br>      &#125;<br>    &#125;<br>    <span class="hljs-keyword">return</span> left;<br>&#125;;<br></code></pre></td></tr></table></figure>
 
             </div>
             <hr>
@@ -304,18 +283,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2021/10/08/2021108-leetcode%E9%A2%98%E8%A7%A3-852/">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">leetcode题解-852</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2021/09/17/2021917-%E6%9C%AC%E5%9C%B0%E5%AD%98%E5%82%A8/">
-                        <span class="hidden-mobile">本地存储</span>
+                      <a href="/2021/10/08/2021108-leetcode%E9%A2%98%E8%A7%A3-852/">
+                        <span class="hidden-mobile">leetcode题解-852</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>

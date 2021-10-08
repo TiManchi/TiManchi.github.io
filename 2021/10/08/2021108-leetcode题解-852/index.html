@@ -18,7 +18,7 @@
   <meta name="author" content="John Doe">
   <meta name="keywords" content="">
   
-  <title>leetcode题解-34 - 个人博客</title>
+  <title>leetcode题解-852 - 个人博客</title>
 
   <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" />
 
@@ -175,7 +175,7 @@
       <div class="full-bg-img">
         <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
           <div class="page-header text-center fade-in-up">
-            <span class="h2" id="subtitle" title="leetcode题解-34">
+            <span class="h2" id="subtitle" title="leetcode题解-852">
               
             </span>
 
@@ -185,8 +185,8 @@
   
     <span class="post-meta">
       <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-      <time datetime="2021-10-08 10:37" pubdate>
-        2021年10月8日 上午
+      <time datetime="2021-10-08 13:43" pubdate>
+        2021年10月8日 下午
       </time>
     </span>
   
@@ -197,7 +197,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      537 字
+      504 字
     </span>
   
 
@@ -207,7 +207,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      8
+      6
        分钟
     </span>
   
@@ -237,35 +237,31 @@
         <div class="py-5" id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">leetcode题解-34</h1>
+            <h1 style="display: none">leetcode题解-852</h1>
             
             <div class="markdown-body">
               <h2 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h2><p><strong>题目</strong></p>
-<p><a href="(https://leetcode-cn.com/problems/find-first-and-last-position-of-element-in-sorted-array/">在排序数组中查找元素的第一个和最后一个位置</a>)</p>
-<p><strong>思路</strong></p>
-<p>找的是数组中第一个等于target的位置（左边界）和第一个大于target的位置-1 （右边界）</p>
-<h2 id="寻找左边界"><a href="#寻找左边界" class="headerlink" title="寻找左边界"></a>寻找左边界</h2><p>找到一个最终切分点 L，需要满足 [0, L) 区间里面的元素都必须小于 target，而 [L, ~) 右边的元素都 &gt;= target。左边界操作原则如下：</p>
+<p><a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/peak-index-in-a-mountain-array/">山脉数组的峰顶索引</a></p>
+<blockquote>
+<p>找到下标，满足比左边和右边的元素都大</p>
+</blockquote>
+<p>把下标设为x 搜索范围是[1,N-1) N为数组长度。因为最优解的左边有元素，所以最小下标必然为 1。而最优解的右边也有元素，所以最大下标值为 N-2。</p>
+<p>x表示搜索空间 再设一个f(x)表示通过x得到的值</p>
+<p>把满足约束条件的（比左边和右边的元素都大）f(x)设为0</p>
+<p>把不满足约束条件的f(x)设为-1 ,1</p>
+<p>那么f(x)的值空间只有三种情况</p>
 <ul>
-<li><p>查找的区间一直是一个左开右闭区间 [L, R)；</p>
+<li><p>山峰左边的元素满足 A[i-1] &lt; A[i] &lt; A[i+1]，可以把这种关系记录为 -1；</p>
 </li>
-<li><p>每次总是把 &gt;= target 的区间扔掉，大于等于的不要了，然后设置 R = M；</p>
+<li><p>山峰元素满足 A[i-1] &lt; A[i] &amp;&amp; A[i] &gt; A[i+1]，可以把这种关系记录 0；</p>
 </li>
-<li><p>当最后的区间元素都小于 target 的时候，移动 L，小于的也不要了，然后设置 L = M + 1。</p>
+<li><p>山峰右边的元素满足 A[i-1] &gt; A[i] &gt; A[i+1]，可以把这种关系记录为 1。</p>
 </li>
 </ul>
-<p>代码如下</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">var</span> lowerBound=<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">nums,target</span>)</span>&#123;<br>    <span class="hljs-keyword">let</span> left=<span class="hljs-number">0</span>,right=nums.length<br>    <span class="hljs-keyword">while</span>(left&lt;right)&#123;<br>        <span class="hljs-keyword">let</span> mid=<span class="hljs-built_in">Math</span>.floor(left+(right-left)/<span class="hljs-number">2</span>)<br>        <span class="hljs-keyword">if</span>(nums[mid]&lt;target)&#123;<br>            left=mid+<span class="hljs-number">1</span><br>        &#125;<span class="hljs-keyword">else</span>&#123;<br>            right=mid<br>        &#125;<br>    &#125;<br>    <span class="hljs-keyword">return</span> left<br>&#125;<br></code></pre></td></tr></table></figure>
-<h2 id="寻找右边界"><a href="#寻找右边界" class="headerlink" title="寻找右边界"></a>寻找右边界</h2><p>找一个切分点 y，使得所有 [0, y) 左区间里面的元素 &lt;= target</p>
-<p>target &lt; 所有 [y, ~) 右区间里面的元素，右边界二分策略</p>
-<ul>
-<li><p>当 A[M] &lt;= target 的时候，需要把 [L, M] 区间扔掉。此时需要设置 L = M + 1；</p>
-</li>
-<li><p>当 A[M] &gt; target 的时候，需要把 (M, R) 区间扔掉。此时需要设置 R = M。</p>
-</li>
-</ul>
-<p>代码如下</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">var</span> upperBound=<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">nums,target</span>)</span>&#123;<br>    <span class="hljs-keyword">let</span> left=<span class="hljs-number">0</span>,right=nums.length<br>    <span class="hljs-keyword">while</span>(left&lt;right)&#123;<br>        <span class="hljs-keyword">let</span> mid=<span class="hljs-built_in">Math</span>.floor(left+(right-left)/<span class="hljs-number">2</span>)<br>        <span class="hljs-keyword">if</span>(nums[mid]&lt;=target)&#123;<br>            left=mid+<span class="hljs-number">1</span><br>        &#125;<span class="hljs-keyword">else</span>&#123;<br>            right=mid<br>        &#125;<br>    &#125;<br>    <span class="hljs-keyword">return</span> left<br>&#125;<br></code></pre></td></tr></table></figure>
-<h2 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@param <span class="hljs-type">&#123;number[]&#125;</span> <span class="hljs-variable">nums</span></span></span><br><span class="hljs-comment"> * <span class="hljs-doctag">@param <span class="hljs-type">&#123;number&#125;</span> <span class="hljs-variable">target</span></span></span><br><span class="hljs-comment"> * <span class="hljs-doctag">@return <span class="hljs-type">&#123;number[]&#125;</span></span></span><br><span class="hljs-comment"> */</span><br><br><span class="hljs-keyword">var</span> lowerBound=<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">nums,target</span>)</span>&#123;<br>    <span class="hljs-keyword">let</span> left=<span class="hljs-number">0</span>,right=nums.length<br>    <span class="hljs-keyword">while</span>(left&lt;right)&#123;<br>        <span class="hljs-keyword">let</span> mid=<span class="hljs-built_in">Math</span>.floor(left+(right-left)/<span class="hljs-number">2</span>)<br>        <span class="hljs-keyword">if</span>(nums[mid]&lt;target)&#123;<br>            left=mid+<span class="hljs-number">1</span><br>        &#125;<span class="hljs-keyword">else</span>&#123;<br>            right=mid<br>        &#125;<br>    &#125;<br>    <span class="hljs-keyword">return</span> left<br>&#125;<br><span class="hljs-keyword">var</span> upperBound=<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">nums,target</span>)</span>&#123;<br>    <span class="hljs-keyword">let</span> left=<span class="hljs-number">0</span>,right=nums.length<br>    <span class="hljs-keyword">while</span>(left&lt;right)&#123;<br>        <span class="hljs-keyword">let</span> mid=<span class="hljs-built_in">Math</span>.floor(left+(right-left)/<span class="hljs-number">2</span>)<br>        <span class="hljs-keyword">if</span>(nums[mid]&lt;=target)&#123;<br>            left=mid+<span class="hljs-number">1</span><br>        &#125;<span class="hljs-keyword">else</span>&#123;<br>            right=mid<br>        &#125;<br>    &#125;<br>    <span class="hljs-keyword">return</span> left<br>&#125;<br><span class="hljs-keyword">var</span> searchRange = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">nums, target</span>) </span>&#123;<br>    <span class="hljs-keyword">let</span> ans = [-<span class="hljs-number">1</span>, -<span class="hljs-number">1</span>]<br>    <span class="hljs-keyword">const</span> leftIdx = lowerBound(nums, target)<br>    <span class="hljs-keyword">const</span> rightIdx = upperBound(nums, target)-<span class="hljs-number">1</span><br>    <span class="hljs-keyword">if</span> (leftIdx &lt;= rightIdx &amp;&amp; rightIdx &lt; nums.length &amp;&amp; nums[leftIdx] === target &amp;&amp; nums[rightIdx] === target) &#123;<br>        ans = [leftIdx, rightIdx]<br>    &#125; <br>    <span class="hljs-keyword">return</span> ans<br>&#125;;<br></code></pre></td></tr></table></figure>
+<p>这样就可以把原数组映射到另一个数组C</p>
+<p><img src="https://wyr-image.oss-cn-beijing.aliyuncs.com/img/leetcode852.jpg" srcset="/img/loading.gif" lazyload alt=""></p>
+<p>映射成一个有序数组C之后，最优解在左边，可以通过使用寻找左边界的二分就可以了，并且不需要先生成映射数组，映射关系可以通过函数来完成，每次生成C[i]就够了</p>
+<h2 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@param <span class="hljs-type">&#123;number[]&#125;</span> <span class="hljs-variable">nums</span></span></span><br><span class="hljs-comment"> * <span class="hljs-doctag">@return <span class="hljs-type">&#123;number&#125;</span></span></span><br><span class="hljs-comment"> */</span><br><span class="hljs-keyword">var</span> getC = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">nums, i</span>) </span>&#123;<br>    <span class="hljs-comment">// 利用函数的方式拿到C数组的值</span><br>  <span class="hljs-keyword">if</span> (nums[i - <span class="hljs-number">1</span>] &lt; nums[i] &amp;&amp; nums[i] &lt; nums[i + <span class="hljs-number">1</span>]) &#123;<br>    <span class="hljs-keyword">return</span> -<span class="hljs-number">1</span>;<br>  &#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (nums[i - <span class="hljs-number">1</span>] &lt; nums[i] &amp;&amp; nums[i] &gt; nums[i + <span class="hljs-number">1</span>]) &#123;<br>    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>  &#125;<br>  <span class="hljs-keyword">return</span> <span class="hljs-number">1</span>;<br>&#125;;<br><span class="hljs-keyword">var</span> peakIndexInMountainArray = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">nums</span>) </span>&#123;<br>  <span class="hljs-keyword">if</span> (nums === <span class="hljs-literal">null</span> || nums.length &lt; <span class="hljs-number">3</span>) &#123;<br>    <span class="hljs-keyword">return</span> -<span class="hljs-number">1</span>;<br>  &#125;<br>  <span class="hljs-keyword">let</span> left = <span class="hljs-number">1</span>,<br>    right = nums.length - <span class="hljs-number">1</span>;<br>  <span class="hljs-comment">// 在C数组上进行二分，这里直接用寻找左边界的二分就可以了。</span><br>  <span class="hljs-keyword">while</span> (left &lt; right) &#123;<br>    <span class="hljs-keyword">let</span> mid = <span class="hljs-built_in">Math</span>.floor(left + (right - left) / <span class="hljs-number">2</span>);<br>    <span class="hljs-keyword">let</span> mov = getC(nums, mid);<br>    <span class="hljs-keyword">if</span> (mov &lt; <span class="hljs-number">0</span>) &#123;<br>      left = mid + <span class="hljs-number">1</span>;<br>    &#125; <span class="hljs-keyword">else</span> &#123;<br>      right = mid;<br>    &#125;<br>  &#125;<br>  <span class="hljs-keyword">return</span> left;<br>&#125;;<br><br></code></pre></td></tr></table></figure>
 
             </div>
             <hr>
@@ -304,9 +300,9 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2021/10/08/2021108-leetcode%E9%A2%98%E8%A7%A3-852/">
+                      <a href="/2021/10/08/2021108-leetcode%E9%A2%98%E8%A7%A3-162/">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">leetcode题解-852</span>
+                        <span class="hidden-mobile">leetcode题解-162</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
@@ -314,8 +310,8 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2021/09/17/2021917-%E6%9C%AC%E5%9C%B0%E5%AD%98%E5%82%A8/">
-                        <span class="hidden-mobile">本地存储</span>
+                      <a href="/2021/10/08/2021108-leetcode%E9%A2%98%E8%A7%A3-34/">
+                        <span class="hidden-mobile">leetcode题解-34</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
