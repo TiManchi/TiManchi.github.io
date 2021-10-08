@@ -4,6 +4,35 @@
   
   
   <entry>
+    <title>leetcode题解-33</title>
+    <link href="/2021/10/08/2021108-leetcode%E9%A2%98%E8%A7%A3-33/"/>
+    <url>/2021/10/08/2021108-leetcode%E9%A2%98%E8%A7%A3-33/</url>
+    
+    <content type="html"><![CDATA[<h2 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h2><p><strong>题目</strong></p><p><a href="https://leetcode-cn.com/problems/search-in-rotated-sorted-array/">搜索旋转排序数组</a></p><p>这道题用二分面临的问题是数组不是有序的，但是可以发现，虽然整个数组不是有序的，但数组的两个部分是有序的，假设有数组A，要查找的值为target，在进行二分操作时候，A[mid]的值有三种可能 </p><ul><li><p>等于目标值</p></li><li><p>落在左边的区域</p></li><li>落在右边区域</li></ul><p>落在左边区域时，满足A[L]&lt;A[M] 分二种情况</p><ul><li>target 位于A[mid]左边 满足 A[L]&lt;=target&lt;A[mid]，在这种情况下，可以直接抛弃右边区域，通过R=mid来扔掉</li><li>target位于 A[m] 的右边。此时左边的部分是没有必要保留的，把左边切掉，让 L = mid+ 1。</li></ul><p>落在右边区域 满足A[M] &lt; A[R] 也分二种情况</p><ul><li>target位于A[mid]右边 满足条件A[mid]&lt;target&lt;=A[R] 直接把左边扔掉 L=M+1</li><li>target位于A[mid]左边，此时只需要把右边区域扔掉即可。即设置 R = M。</li></ul><h2 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@param <span class="hljs-type">&#123;number[]&#125;</span> <span class="hljs-variable">nums</span></span></span><br><span class="hljs-comment"> * <span class="hljs-doctag">@param <span class="hljs-type">&#123;number&#125;</span> <span class="hljs-variable">target</span></span></span><br><span class="hljs-comment"> * <span class="hljs-doctag">@return <span class="hljs-type">&#123;number&#125;</span></span></span><br><span class="hljs-comment"> */</span><br><span class="hljs-keyword">var</span> search = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">nums, target</span>) </span>&#123;<br>    <span class="hljs-keyword">const</span> len=nums.length<br>    <span class="hljs-keyword">let</span> res=-<span class="hljs-number">1</span><br>    <span class="hljs-keyword">let</span> left=<span class="hljs-number">0</span>,right=len<br>    <span class="hljs-keyword">while</span>(left&lt;right)&#123;<br>        <span class="hljs-keyword">let</span> mid=<span class="hljs-built_in">Math</span>.floor(left+(right-left)/<span class="hljs-number">2</span>)<br>        <span class="hljs-keyword">if</span>(nums[mid]==target)&#123;<br>            res=mid<br>            <span class="hljs-keyword">break</span><br>        &#125;<br>        <span class="hljs-comment">//落在左半</span><br>        <span class="hljs-keyword">if</span>(nums[mid]&gt;nums[left])&#123;<br>            <span class="hljs-comment">//左半有序部分</span><br>            <span class="hljs-keyword">if</span>(nums[left]&lt;=target &amp;&amp; target&lt;nums[mid])&#123;<br>                right=mid<br>            &#125;<span class="hljs-keyword">else</span>&#123;<br>                <span class="hljs-comment">//不在左半有序</span><br>                left=mid+<span class="hljs-number">1</span><br>            &#125;<br>        &#125;<span class="hljs-keyword">else</span>&#123;<span class="hljs-comment">//落在右半</span><br>            <span class="hljs-comment">//右半有序</span><br>            <span class="hljs-keyword">if</span>(nums[mid]&lt;target &amp;&amp; target&lt;=nums[right-<span class="hljs-number">1</span>])&#123;<br>                left=mid+<span class="hljs-number">1</span><br>            &#125;<span class="hljs-keyword">else</span>&#123;<br>                <span class="hljs-comment">//不在右半有序</span><br>                right=mid<br>            &#125;<br>        &#125;<br>    &#125;<br>    <span class="hljs-keyword">return</span> res<br>&#125;;<br></code></pre></td></tr></table></figure>]]></content>
+    
+    
+    <categories>
+      
+      <category>Leetcode题解</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>二分查找</tag>
+      
+      <tag>LeetCode</tag>
+      
+      <tag>算法与数据结构</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>leetcode题解-162</title>
     <link href="/2021/10/08/2021108-leetcode%E9%A2%98%E8%A7%A3-162/"/>
     <url>/2021/10/08/2021108-leetcode%E9%A2%98%E8%A7%A3-162/</url>
