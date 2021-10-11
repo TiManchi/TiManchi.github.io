@@ -4,6 +4,93 @@
   
   
   <entry>
+    <title>leetcode题解-75</title>
+    <link href="/2021/10/11/20211011-leetcode%E9%A2%98%E8%A7%A3-75/"/>
+    <url>/2021/10/11/20211011-leetcode%E9%A2%98%E8%A7%A3-75/</url>
+    
+    <content type="html"><![CDATA[<h2 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h2><p><a href="https://leetcode-cn.com/problems/sort-colors/">颜色分类</a></p><p>利用快排的思想，在快排时，通过一个整数x将数组划分成小于、等于、大于三部分。这个题目关键是循环不变量的设置</p><ul><li>循环不变量[0,i）为0区，[i..j) 为1区，[j,k) 为未知区，[k,num.length-1]为二区</li><li>初值 i=0,j=0,k=nums.length ，<strong>0区，1区，2区都为空</strong></li><li>循环j</li></ul><p>代码实现参考了leetcode的题解</p><p>作者：liweiwei1419<br>链接：<a href="https://leetcode-cn.com/problems/sort-colors/solution/kuai-su-pai-xu-partition-guo-cheng-she-ji-xun-huan/">https://leetcode-cn.com/problems/sort-colors/solution/kuai-su-pai-xu-partition-guo-cheng-she-ji-xun-huan/</a><br>来源：力扣（LeetCode）</p><h2 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@param <span class="hljs-type">&#123;number[]&#125;</span> <span class="hljs-variable">nums</span></span></span><br><span class="hljs-comment"> * <span class="hljs-doctag">@return <span class="hljs-type">&#123;void&#125;</span> </span>Do not return anything, modify nums in-place instead.</span><br><span class="hljs-comment"> */</span><br><span class="hljs-keyword">var</span> sortColors = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">nums</span>) </span>&#123;<br>  <span class="hljs-keyword">let</span> len = nums.length;<br>  <span class="hljs-keyword">if</span> (len &lt; <span class="hljs-number">2</span>) &#123;<br>    <span class="hljs-keyword">return</span>;<br>  &#125;<br>  <span class="hljs-comment">//[0,zero) ==0</span><br>  <span class="hljs-comment">//[zero,i) ==1</span><br>  <span class="hljs-comment">//[two,len-1]==2</span><br>  <span class="hljs-comment">//初始化保证 0区，1区，2区都要为空</span><br>  <span class="hljs-keyword">let</span> zero = <span class="hljs-number">0</span>;<br>  <span class="hljs-keyword">let</span> i = <span class="hljs-number">0</span>;<br>  <span class="hljs-keyword">let</span> two = len;<br>  <span class="hljs-comment">//当 i=two时 上面划分的三个子区间正好覆盖整个数组</span><br>  <span class="hljs-keyword">while</span> (i &lt; two) &#123;<br>    <span class="hljs-comment">//遍历到0时 因为0区[0,zero)为左闭右开，所以先交换在将zero++，才能保证循环不变量的正确性</span><br>    <span class="hljs-keyword">if</span> (nums[i] == <span class="hljs-number">0</span>) &#123;<br>      swap(nums, i, zero);<br>      i++;<br>      zero++;<br>    &#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (nums[i] == <span class="hljs-number">1</span>) &#123;<br>       <span class="hljs-comment">//遍历到1时 直接将i++</span><br>      i++;<br>    &#125; <span class="hljs-keyword">else</span> &#123;<br>      <span class="hljs-comment">//遍历到2时 2区是[two,len-1] 初始化two=len 因此要先将two-- 后在交换,同时交换过来的值不确定，所以要继续考察，i不用++</span><br>      two--;<br>      swap(nums, i, two);<br>    &#125;<br>  &#125;<br>&#125;;<br><br><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">swap</span>(<span class="hljs-params">arr, i, j</span>) </span>&#123;<br>  [arr[i], arr[j]] = [arr[j], arr[i]];<br>&#125;<br><br></code></pre></td></tr></table></figure>]]></content>
+    
+    
+    <categories>
+      
+      <category>Leetcode题解</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>排序</tag>
+      
+      <tag>LeetCode</tag>
+      
+      <tag>算法与数据结构</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>leetcode题解-3</title>
+    <link href="/2021/10/09/2021109-leetcode%E9%A2%98%E8%A7%A3-3/"/>
+    <url>/2021/10/09/2021109-leetcode%E9%A2%98%E8%A7%A3-3/</url>
+    
+    <content type="html"><![CDATA[<h2 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h2><p><strong>题目</strong></p><p><a href="https://leetcode-cn.com/problems/longest-substring-without-repeating-characters/">无重复字符的最长字串</a></p><p>思路和之前的209题差不多，向右扩张时判断是否与窗口内的值重复，没必要每次扫描窗口的值，可以用set来做</p><h2 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@param <span class="hljs-type">&#123;string&#125;</span> <span class="hljs-variable">s</span></span></span><br><span class="hljs-comment"> * <span class="hljs-doctag">@return <span class="hljs-type">&#123;number&#125;</span></span></span><br><span class="hljs-comment"> */</span><br> <span class="hljs-keyword">var</span> lengthOfLongestSubstring = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">s</span>) </span>&#123;<br>     <span class="hljs-comment">//</span><br>     <span class="hljs-keyword">let</span> set=<span class="hljs-keyword">new</span> <span class="hljs-built_in">Set</span>()<br>     <span class="hljs-keyword">let</span> l=<span class="hljs-number">0</span>,r=-<span class="hljs-number">1</span><br>     <span class="hljs-keyword">let</span> res=<span class="hljs-number">0</span><br>     <span class="hljs-keyword">while</span>(l&lt;s.length)&#123;<br>         <span class="hljs-comment">//不重复就扩张窗口</span><br>         <span class="hljs-keyword">if</span>(r+<span class="hljs-number">1</span>&lt;s.length &amp;&amp; !set.has(s[r+<span class="hljs-number">1</span>]))&#123;<br>             set.add(s[++r])<br>         &#125;<span class="hljs-keyword">else</span>&#123;<br>           <span class="hljs-comment">//收缩窗口</span><br>             set.delete(s[l++])<br>         &#125;<br>         res=<span class="hljs-built_in">Math</span>.max(res,r-l+<span class="hljs-number">1</span>)<br><br>     &#125;<br>     <span class="hljs-keyword">return</span> res;<br>&#125;;<br></code></pre></td></tr></table></figure>]]></content>
+    
+    
+    <categories>
+      
+      <category>Leetcode题解</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>LeetCode</tag>
+      
+      <tag>算法与数据结构</tag>
+      
+      <tag>滑动窗口</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>leetcode题解-209</title>
+    <link href="/2021/10/09/2021109-leetcode%E9%A2%98%E8%A7%A3-209/"/>
+    <url>/2021/10/09/2021109-leetcode%E9%A2%98%E8%A7%A3-209/</url>
+    
+    <content type="html"><![CDATA[<h2 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h2><p><strong>题目</strong></p><p><a href="https://leetcode-cn.com/problems/minimum-size-subarray-sum/">长度最小的数组</a></p><p>使用滑动窗口 定义两个指针 l=0,r=-1 表示初始不包含一个元素</p><p>r用来扩展窗口 ，l用来缩小窗口，当[l..r]种的元素和大于s时，更新子数组最小长度，并且此时r在往右移的话 ，窗口的元素和都大于s了 ，所以要开始把左指针往右移动，缩小窗口，直到窗口内元素和小于后再移动右指针</p><h2 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@param <span class="hljs-type">&#123;number&#125;</span> <span class="hljs-variable">target</span></span></span><br><span class="hljs-comment"> * <span class="hljs-doctag">@param <span class="hljs-type">&#123;number[]&#125;</span> <span class="hljs-variable">nums</span></span></span><br><span class="hljs-comment"> * <span class="hljs-doctag">@return <span class="hljs-type">&#123;number&#125;</span></span></span><br><span class="hljs-comment"> */</span><br><span class="hljs-keyword">var</span> minSubArrayLen = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">s, nums</span>) </span>&#123;<br>  <span class="hljs-keyword">let</span> l = <span class="hljs-number">0</span>,<span class="hljs-comment">//nums[l...r]为滑动窗口</span><br>    r = -<span class="hljs-number">1</span>;<br>  <span class="hljs-keyword">let</span> sum = <span class="hljs-number">0</span>;<br>  <span class="hljs-keyword">let</span> res = nums.length + <span class="hljs-number">1</span>;<br>  <span class="hljs-keyword">while</span> (l &lt; nums.length) &#123;<br>    <span class="hljs-comment">//r+1&lt;nums.length是防止数组访问越界</span><br>    <span class="hljs-keyword">if</span> (r + <span class="hljs-number">1</span> &lt; nums.length &amp;&amp; sum &lt; s) &#123;<br>      <span class="hljs-comment">//扩张窗口</span><br>      sum += nums[++r];<br>    &#125; <span class="hljs-keyword">else</span> &#123;<br>      <span class="hljs-comment">//缩小窗口</span><br>      sum -= nums[l++];<br>    &#125;<br>    <span class="hljs-keyword">if</span> (sum &gt;= s) &#123;<br>      res = <span class="hljs-built_in">Math</span>.min(res, r - l + <span class="hljs-number">1</span>);<br>    &#125;<br>  &#125;<br>  <span class="hljs-keyword">return</span> res === nums.length + <span class="hljs-number">1</span> ? <span class="hljs-number">0</span> : res;<br>&#125;;<br><br></code></pre></td></tr></table></figure>]]></content>
+    
+    
+    <categories>
+      
+      <category>Leetcode题解</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>LeetCode</tag>
+      
+      <tag>算法与数据结构</tag>
+      
+      <tag>滑动窗口</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>leetcode题解-33</title>
     <link href="/2021/10/08/2021108-leetcode%E9%A2%98%E8%A7%A3-33/"/>
     <url>/2021/10/08/2021108-leetcode%E9%A2%98%E8%A7%A3-33/</url>
@@ -20,11 +107,11 @@
     
     <tags>
       
-      <tag>二分查找</tag>
-      
       <tag>LeetCode</tag>
       
       <tag>算法与数据结构</tag>
+      
+      <tag>二分查找</tag>
       
     </tags>
     
@@ -49,11 +136,11 @@
     
     <tags>
       
-      <tag>二分查找</tag>
-      
       <tag>LeetCode</tag>
       
       <tag>算法与数据结构</tag>
+      
+      <tag>二分查找</tag>
       
     </tags>
     
@@ -78,11 +165,11 @@
     
     <tags>
       
-      <tag>二分查找</tag>
-      
       <tag>LeetCode</tag>
       
       <tag>算法与数据结构</tag>
+      
+      <tag>二分查找</tag>
       
     </tags>
     
@@ -107,11 +194,11 @@
     
     <tags>
       
-      <tag>二分查找</tag>
-      
       <tag>LeetCode</tag>
       
       <tag>算法与数据结构</tag>
+      
+      <tag>二分查找</tag>
       
     </tags>
     

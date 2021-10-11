@@ -194,6 +194,183 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
+        <a href="/2021/10/11/20211011-leetcode%E9%A2%98%E8%A7%A3-75/" target="_blank">
+          leetcode题解-75
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2021/10/11/20211011-leetcode%E9%A2%98%E8%A7%A3-75/" target="_blank">
+          
+          
+            
+          
+          思路颜色分类
+利用快排的思想，在快排时，通过一个整数x将数组划分成小于、等于、大于三部分。这个题目关键是循环不变量的设置
+
+循环不变量[0,i）为0区，[i..j) 为1区，[j,k) 为未知区，[k,num.length-1]为二区
+初值 i=0,j=0,k=nums.length ，0区，1区，2区都为空
+循环j
+
+代码实现参考了leetcode的题解
+作者：liweiwei1419链接：ht
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2021-10-11 09:49" pubdate>
+              2021-10-11
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/Leetcode%E9%A2%98%E8%A7%A3/">Leetcode题解</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E6%8E%92%E5%BA%8F/">排序</a>
+            
+              <a href="/tags/LeetCode/">LeetCode</a>
+            
+              <a href="/tags/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">算法与数据结构</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2021/10/09/2021109-leetcode%E9%A2%98%E8%A7%A3-3/" target="_blank">
+          leetcode题解-3
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2021/10/09/2021109-leetcode%E9%A2%98%E8%A7%A3-3/" target="_blank">
+          
+          
+            
+          
+          思路题目
+无重复字符的最长字串
+思路和之前的209题差不多，向右扩张时判断是否与窗口内的值重复，没必要每次扫描窗口的值，可以用set来做
+代码12345678910111213141516171819202122/** * @param &#123;string&#125; s * @return &#123;number&#125; */ var lengthOfLongestSubstring
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2021-10-09 15:29" pubdate>
+              2021-10-09
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/Leetcode%E9%A2%98%E8%A7%A3/">Leetcode题解</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/LeetCode/">LeetCode</a>
+            
+              <a href="/tags/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">算法与数据结构</a>
+            
+              <a href="/tags/%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3/">滑动窗口</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2021/10/09/2021109-leetcode%E9%A2%98%E8%A7%A3-209/" target="_blank">
+          leetcode题解-209
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2021/10/09/2021109-leetcode%E9%A2%98%E8%A7%A3-209/" target="_blank">
+          
+          
+            
+          
+          思路题目
+长度最小的数组
+使用滑动窗口 定义两个指针 l=0,r=-1 表示初始不包含一个元素
+r用来扩展窗口 ，l用来缩小窗口，当[l..r]种的元素和大于s时，更新子数组最小长度，并且此时r在往右移的话 ，窗口的元素和都大于s了 ，所以要开始把左指针往右移动，缩小窗口，直到窗口内元素和小于后再移动右指针
+代码1234567891011121314151617181920212223242526
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2021-10-09 15:15" pubdate>
+              2021-10-09
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/Leetcode%E9%A2%98%E8%A7%A3/">Leetcode题解</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/LeetCode/">LeetCode</a>
+            
+              <a href="/tags/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">算法与数据结构</a>
+            
+              <a href="/tags/%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3/">滑动窗口</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
         <a href="/2021/10/08/2021108-leetcode%E9%A2%98%E8%A7%A3-33/" target="_blank">
           leetcode题解-33
         </a>
@@ -242,11 +419,11 @@ target 位于A[mid]左边 满足 A[L]&lt;=targ
           <div class="post-meta">
             <i class="iconfont icon-tags"></i>
             
-              <a href="/tags/%E4%BA%8C%E5%88%86%E6%9F%A5%E6%89%BE/">二分查找</a>
-            
               <a href="/tags/LeetCode/">LeetCode</a>
             
               <a href="/tags/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">算法与数据结构</a>
+            
+              <a href="/tags/%E4%BA%8C%E5%88%86%E6%9F%A5%E6%89%BE/">二分查找</a>
             
           </div>
         
@@ -300,11 +477,11 @@ target 位于A[mid]左边 满足 A[L]&lt;=targ
           <div class="post-meta">
             <i class="iconfont icon-tags"></i>
             
-              <a href="/tags/%E4%BA%8C%E5%88%86%E6%9F%A5%E6%89%BE/">二分查找</a>
-            
               <a href="/tags/LeetCode/">LeetCode</a>
             
               <a href="/tags/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">算法与数据结构</a>
+            
+              <a href="/tags/%E4%BA%8C%E5%88%86%E6%9F%A5%E6%89%BE/">二分查找</a>
             
           </div>
         
@@ -363,11 +540,11 @@ x表示搜索空间 再设一个f(x)表示通过x得到的值
           <div class="post-meta">
             <i class="iconfont icon-tags"></i>
             
-              <a href="/tags/%E4%BA%8C%E5%88%86%E6%9F%A5%E6%89%BE/">二分查找</a>
-            
               <a href="/tags/LeetCode/">LeetCode</a>
             
               <a href="/tags/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">算法与数据结构</a>
+            
+              <a href="/tags/%E4%BA%8C%E5%88%86%E6%9F%A5%E6%89%BE/">二分查找</a>
             
           </div>
         
@@ -425,11 +602,11 @@ x表示搜索空间 再设一个f(x)表示通过x得到的值
           <div class="post-meta">
             <i class="iconfont icon-tags"></i>
             
-              <a href="/tags/%E4%BA%8C%E5%88%86%E6%9F%A5%E6%89%BE/">二分查找</a>
-            
               <a href="/tags/LeetCode/">LeetCode</a>
             
               <a href="/tags/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">算法与数据结构</a>
+            
+              <a href="/tags/%E4%BA%8C%E5%88%86%E6%9F%A5%E6%89%BE/">二分查找</a>
             
           </div>
         
@@ -603,119 +780,13 @@ x表示搜索空间 再设一个f(x)表示通过x得到的值
     </article>
   </div>
 
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2021/08/17/2021817-%E5%A4%8D%E7%8E%B0%E7%BB%8F%E5%85%B8%E7%BD%91%E7%BB%9CVGG16/" target="_blank">
-          复现经典网络VGG16
-        </a>
-      </h1>
-
-      <p class="index-excerpt">
-        <a href="/2021/08/17/2021817-%E5%A4%8D%E7%8E%B0%E7%BB%8F%E5%85%B8%E7%BD%91%E7%BB%9CVGG16/" target="_blank">
-          
-          
-            
-          
-          原理核心思想就是使用多个连续且保持特征图尺寸不变的卷积层来增加深度，以增加算法的学习能力
-架构图如下：
-
-使用pytorch来复现
-代码实现导库
-123import torchfrom torch import nnfrom torchinfo import summary
-实现网络模型
-1234567891011121314151617181920212223242526272829303132
-        </a>
-      </p>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2021-08-17 08:00" pubdate>
-              2021-08-17
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/">深度学习</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/">深度学习</a>
-            
-              <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89/">计算机视觉</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2021/08/16/2021816-%E5%A4%8D%E7%8E%B0%E7%BB%8F%E5%85%B8%E7%BD%91%E7%BB%9CleNet5%E5%92%8CAlexNet/" target="_blank">
-          复现经典网络leNet5和AlexNet
-        </a>
-      </h1>
-
-      <p class="index-excerpt">
-        <a href="/2021/08/16/2021816-%E5%A4%8D%E7%8E%B0%E7%BB%8F%E5%85%B8%E7%BD%91%E7%BB%9CleNet5%E5%92%8CAlexNet/" target="_blank">
-          
-          
-            
-          
-          LeNet5
-首先，图像从左侧输入，从右侧输出，数据传输方向与DNN一致。整个网络由2个卷积层、2个平均池化 层和2个全连接层组成，虽然没有标注出来，但每个卷积层和全连接层后都使用激活函数tanh或 sigmoid。 这个架构就是著名的LeNet5架构，它在1998年被LeCun等人在论文《Gradient-Based Learning Applied to Document Recognitio
-        </a>
-      </p>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2021-08-16 08:10" pubdate>
-              2021-08-16
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/">深度学习</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/">深度学习</a>
-            
-              <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89/">计算机视觉</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
 
 
+  <nav aria-label="navigation">
+    <span class="pagination" id="pagination">
+      <span class="page-number current">1</span><a class="page-number" href="/page/2/#board">2</a><a class="extend next" rel="next" href="/page/2/#board"><i class="iconfont icon-arrowright"></i></a>
+    </span>
+  </nav>
 
 
 

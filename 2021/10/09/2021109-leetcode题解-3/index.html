@@ -18,7 +18,7 @@
   <meta name="author" content="John Doe">
   <meta name="keywords" content="">
   
-  <title>leetcode题解-162 - 个人博客</title>
+  <title>leetcode题解-3 - 个人博客</title>
 
   <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" />
 
@@ -175,7 +175,7 @@
       <div class="full-bg-img">
         <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
           <div class="page-header text-center fade-in-up">
-            <span class="h2" id="subtitle" title="leetcode题解-162">
+            <span class="h2" id="subtitle" title="leetcode题解-3">
               
             </span>
 
@@ -185,8 +185,8 @@
   
     <span class="post-meta">
       <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-      <time datetime="2021-10-08 14:22" pubdate>
-        2021年10月8日 下午
+      <time datetime="2021-10-09 15:29" pubdate>
+        2021年10月9日 下午
       </time>
     </span>
   
@@ -197,7 +197,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      176 字
+      143 字
     </span>
   
 
@@ -237,15 +237,13 @@
         <div class="py-5" id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">leetcode题解-162</h1>
+            <h1 style="display: none">leetcode题解-3</h1>
             
             <div class="markdown-body">
               <h2 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h2><p><strong>题目</strong></p>
-<p><a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/find-peak-element/">寻找峰值</a></p>
-<p>思路</p>
-<p>对于任意一点与其相邻的节点，沿着递增一侧的方向一定能够找到一个峰值</p>
-<h2 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@param <span class="hljs-type">&#123;number[]&#125;</span> <span class="hljs-variable">nums</span></span></span><br><span class="hljs-comment"> * <span class="hljs-doctag">@return <span class="hljs-type">&#123;number&#125;</span></span></span><br><span class="hljs-comment"> */</span><br><span class="hljs-comment">/*</span><br><span class="hljs-comment">比较mid与mid+1位置上值的大小，如果mid值较大，</span><br><span class="hljs-comment">则[left, mid]一定有峰值，反之[mid+1, right]一定有峰值。*/</span><br><span class="hljs-keyword">var</span> findPeakElement = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">nums</span>) </span>&#123;<br>    <span class="hljs-keyword">let</span> left = <span class="hljs-number">0</span>;<br>    <span class="hljs-keyword">let</span> right = nums.length - <span class="hljs-number">1</span>;<br>    <span class="hljs-keyword">while</span> (left &lt; right) &#123;<br>      <span class="hljs-keyword">const</span> mid = <span class="hljs-built_in">Math</span>.floor(left+(right-left)/<span class="hljs-number">2</span>);<br>      <span class="hljs-comment">// 比较mid与mid+1位置上值的大小，如果mid位置较大，则mid左侧一定有峰值，反之mid+1右侧一定有峰值。</span><br>      <span class="hljs-keyword">if</span> (nums[mid] &lt;= nums[mid + <span class="hljs-number">1</span>]) &#123;<br>        left = mid + <span class="hljs-number">1</span>;<br>      &#125; <span class="hljs-keyword">else</span> &#123;<br>        right = mid;<br>      &#125;<br>    &#125;<br>    <span class="hljs-keyword">return</span> left;<br>&#125;;<br></code></pre></td></tr></table></figure>
-
+<p><a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/longest-substring-without-repeating-characters/">无重复字符的最长字串</a></p>
+<p>思路和之前的209题差不多，向右扩张时判断是否与窗口内的值重复，没必要每次扫描窗口的值，可以用set来做</p>
+<h2 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@param <span class="hljs-type">&#123;string&#125;</span> <span class="hljs-variable">s</span></span></span><br><span class="hljs-comment"> * <span class="hljs-doctag">@return <span class="hljs-type">&#123;number&#125;</span></span></span><br><span class="hljs-comment"> */</span><br> <span class="hljs-keyword">var</span> lengthOfLongestSubstring = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">s</span>) </span>&#123;<br>     <span class="hljs-comment">//</span><br>     <span class="hljs-keyword">let</span> set=<span class="hljs-keyword">new</span> <span class="hljs-built_in">Set</span>()<br>     <span class="hljs-keyword">let</span> l=<span class="hljs-number">0</span>,r=-<span class="hljs-number">1</span><br>     <span class="hljs-keyword">let</span> res=<span class="hljs-number">0</span><br>     <span class="hljs-keyword">while</span>(l&lt;s.length)&#123;<br>         <span class="hljs-comment">//不重复就扩张窗口</span><br>         <span class="hljs-keyword">if</span>(r+<span class="hljs-number">1</span>&lt;s.length &amp;&amp; !set.has(s[r+<span class="hljs-number">1</span>]))&#123;<br>             set.add(s[++r])<br>         &#125;<span class="hljs-keyword">else</span>&#123;<br>           <span class="hljs-comment">//收缩窗口</span><br>             set.delete(s[l++])<br>         &#125;<br>         res=<span class="hljs-built_in">Math</span>.max(res,r-l+<span class="hljs-number">1</span>)<br><br>     &#125;<br>     <span class="hljs-keyword">return</span> res;<br>&#125;;<br></code></pre></td></tr></table></figure>
             </div>
             <hr>
             <div>
@@ -266,7 +264,7 @@
                     
                       <a class="hover-with-bg" href="/tags/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">算法与数据结构</a>
                     
-                      <a class="hover-with-bg" href="/tags/%E4%BA%8C%E5%88%86%E6%9F%A5%E6%89%BE/">二分查找</a>
+                      <a class="hover-with-bg" href="/tags/%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3/">滑动窗口</a>
                     
                   </div>
                 
@@ -283,9 +281,9 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2021/10/08/2021108-leetcode%E9%A2%98%E8%A7%A3-33/">
+                      <a href="/2021/10/11/20211011-leetcode%E9%A2%98%E8%A7%A3-75/">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">leetcode题解-33</span>
+                        <span class="hidden-mobile">leetcode题解-75</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
@@ -293,8 +291,8 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2021/10/08/2021108-leetcode%E9%A2%98%E8%A7%A3-852/">
-                        <span class="hidden-mobile">leetcode题解-852</span>
+                      <a href="/2021/10/09/2021109-leetcode%E9%A2%98%E8%A7%A3-209/">
+                        <span class="hidden-mobile">leetcode题解-209</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
