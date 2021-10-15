@@ -18,7 +18,7 @@
   <meta name="author" content="John Doe">
   <meta name="keywords" content="">
   
-  <title>leetcode题解-75 - 个人博客</title>
+  <title>leetcode题解-217 - 个人博客</title>
 
   <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" />
 
@@ -175,7 +175,7 @@
       <div class="full-bg-img">
         <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
           <div class="page-header text-center fade-in-up">
-            <span class="h2" id="subtitle" title="leetcode题解-75">
+            <span class="h2" id="subtitle" title="leetcode题解-217">
               
             </span>
 
@@ -185,8 +185,8 @@
   
     <span class="post-meta">
       <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-      <time datetime="2021-10-11 09:49" pubdate>
-        2021年10月11日 上午
+      <time datetime="2021-10-15 10:59" pubdate>
+        2021年10月15日 上午
       </time>
     </span>
   
@@ -197,7 +197,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      379 字
+      107 字
     </span>
   
 
@@ -207,7 +207,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      5
+      1
        分钟
     </span>
   
@@ -237,19 +237,13 @@
         <div class="py-5" id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">leetcode题解-75</h1>
+            <h1 style="display: none">leetcode题解-217</h1>
             
             <div class="markdown-body">
-              <h2 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h2><p><a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/sort-colors/">颜色分类</a></p>
-<p>利用快排的思想，在快排时，通过一个整数x将数组划分成小于、等于、大于三部分。这个题目关键是循环不变量的设置</p>
-<ul>
-<li>循环不变量[0,i）为0区，[i..j) 为1区，[j,k) 为未知区，[k,num.length-1]为二区</li>
-<li>初值 i=0,j=0,k=nums.length ，<strong>0区，1区，2区都为空</strong></li>
-<li>循环j</li>
-</ul>
-<p>代码实现参考了leetcode的题解</p>
-<p>作者：liweiwei1419<br>链接：<a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/sort-colors/solution/kuai-su-pai-xu-partition-guo-cheng-she-ji-xun-huan/">https://leetcode-cn.com/problems/sort-colors/solution/kuai-su-pai-xu-partition-guo-cheng-she-ji-xun-huan/</a><br>来源：力扣（LeetCode）</p>
-<h2 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@param <span class="hljs-type">&#123;number[]&#125;</span> <span class="hljs-variable">nums</span></span></span><br><span class="hljs-comment"> * <span class="hljs-doctag">@return <span class="hljs-type">&#123;void&#125;</span> </span>Do not return anything, modify nums in-place instead.</span><br><span class="hljs-comment"> */</span><br><span class="hljs-keyword">var</span> sortColors = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">nums</span>) </span>&#123;<br>  <span class="hljs-keyword">let</span> len = nums.length;<br>  <span class="hljs-keyword">if</span> (len &lt; <span class="hljs-number">2</span>) &#123;<br>    <span class="hljs-keyword">return</span>;<br>  &#125;<br>  <span class="hljs-comment">//[0,zero) ==0</span><br>  <span class="hljs-comment">//[zero,i) ==1</span><br>  <span class="hljs-comment">//[two,len-1]==2</span><br>  <span class="hljs-comment">//初始化保证 0区，1区，2区都要为空</span><br>  <span class="hljs-keyword">let</span> zero = <span class="hljs-number">0</span>;<br>  <span class="hljs-keyword">let</span> i = <span class="hljs-number">0</span>;<br>  <span class="hljs-keyword">let</span> two = len;<br>  <span class="hljs-comment">//当 i=two时 上面划分的三个子区间正好覆盖整个数组</span><br>  <span class="hljs-keyword">while</span> (i &lt; two) &#123;<br>    <span class="hljs-comment">//遍历到0时 因为0区[0,zero)为左闭右开，所以先交换在将zero++，才能保证循环不变量的正确性</span><br>    <span class="hljs-keyword">if</span> (nums[i] == <span class="hljs-number">0</span>) &#123;<br>      swap(nums, i, zero);<br>      i++;<br>      zero++;<br>    &#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (nums[i] == <span class="hljs-number">1</span>) &#123;<br>       <span class="hljs-comment">//遍历到1时 直接将i++</span><br>      i++;<br>    &#125; <span class="hljs-keyword">else</span> &#123;<br>      <span class="hljs-comment">//遍历到2时 2区是[two,len-1] 初始化two=len 因此要先将two-- 后在交换,同时交换过来的值不确定，所以要继续考察，i不用++</span><br>      two--;<br>      swap(nums, i, two);<br>    &#125;<br>  &#125;<br>&#125;;<br><br><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">swap</span>(<span class="hljs-params">arr, i, j</span>) </span>&#123;<br>  [arr[i], arr[j]] = [arr[j], arr[i]];<br>&#125;<br><br></code></pre></td></tr></table></figure>
+              <h2 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h2><p><strong>题目</strong></p>
+<p><a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/contains-duplicate/">存在重复元素</a></p>
+<p>创建一个哈希表，然后从遍历数组。检测哈希表中是否已存在当前字符，若存在，直接返回结果，若不存在，将当前字符加入哈希表。</p>
+<h2 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@param <span class="hljs-type">&#123;number[]&#125;</span> <span class="hljs-variable">nums</span></span></span><br><span class="hljs-comment"> * <span class="hljs-doctag">@return <span class="hljs-type">&#123;boolean&#125;</span></span></span><br><span class="hljs-comment"> */</span><br><span class="hljs-keyword">var</span> containsDuplicate = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">nums</span>) </span>&#123;<br>    <span class="hljs-keyword">let</span> map=<span class="hljs-keyword">new</span> <span class="hljs-built_in">Map</span>()<br>    <span class="hljs-keyword">for</span>(item <span class="hljs-keyword">of</span> nums)&#123;<br>        <span class="hljs-keyword">if</span>(map.has(item))&#123;<br>            <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span><br>        &#125;<span class="hljs-keyword">else</span>&#123;<br>            map.set(item,<span class="hljs-number">1</span>)<br>        &#125;<br>    &#125;<br>    <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span><br>&#125;;<br></code></pre></td></tr></table></figure>
 
             </div>
             <hr>
@@ -267,11 +261,11 @@
                   <div class="post-meta">
                     <i class="iconfont icon-tags"></i>
                     
-                      <a class="hover-with-bg" href="/tags/%E6%8E%92%E5%BA%8F/">排序</a>
-                    
                       <a class="hover-with-bg" href="/tags/LeetCode/">LeetCode</a>
                     
                       <a class="hover-with-bg" href="/tags/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">算法与数据结构</a>
+                    
+                      <a class="hover-with-bg" href="/tags/%E5%93%88%E5%B8%8C%E8%A1%A8/">哈希表</a>
                     
                   </div>
                 
@@ -288,9 +282,9 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2021/10/15/20211015-leetcode%E9%A2%98%E8%A7%A3-217/">
+                      <a href="/2021/10/15/20211015-leetcode%E9%A2%98%E8%A7%A3-53/">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">leetcode题解-217</span>
+                        <span class="hidden-mobile">leetcode题解-53</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
@@ -298,8 +292,8 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2021/10/09/2021109-leetcode%E9%A2%98%E8%A7%A3-3/">
-                        <span class="hidden-mobile">leetcode题解-3</span>
+                      <a href="/2021/10/11/20211011-leetcode%E9%A2%98%E8%A7%A3-75/">
+                        <span class="hidden-mobile">leetcode题解-75</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>

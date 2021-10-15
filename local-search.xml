@@ -4,6 +4,64 @@
   
   
   <entry>
+    <title>leetcode题解-53</title>
+    <link href="/2021/10/15/20211015-leetcode%E9%A2%98%E8%A7%A3-53/"/>
+    <url>/2021/10/15/20211015-leetcode%E9%A2%98%E8%A7%A3-53/</url>
+    
+    <content type="html"><![CDATA[<h2 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h2><p>题目</p><p><a href="https://leetcode-cn.com/problems/maximum-subarray/">最大子序和</a></p><p>动态规划思路</p><p>状态定义</p><p>dp[i]:表示以nums[i]结尾的连续子数组的最大和</p><p>状态转移</p><p>dp[i]=max{nums[i],dp[i−1]+nums[i]}</p><p>初始化</p><p>dp[0] 一定以nums[0]为结尾 dp[0]=nums[0]</p><h2 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@param <span class="hljs-type">&#123;number[]&#125;</span> <span class="hljs-variable">nums</span></span></span><br><span class="hljs-comment"> * <span class="hljs-doctag">@return <span class="hljs-type">&#123;number&#125;</span></span></span><br><span class="hljs-comment"> */</span><br><br> <span class="hljs-comment">//dp[i]：表示以 nums[i] 结尾 的 连续 子数组的最大和。</span><br> <span class="hljs-comment">//状态转移方程 dp[i]=max&#123;nums[i],dp[i−1]+nums[i]&#125;</span><br> <span class="hljs-keyword">var</span> maxSubArray = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">nums</span>) </span>&#123;<br>     <span class="hljs-keyword">let</span> len=nums.length<br>     <span class="hljs-keyword">let</span> dp=<span class="hljs-keyword">new</span> <span class="hljs-built_in">Array</span>(len)<br>     dp[<span class="hljs-number">0</span>]=nums[<span class="hljs-number">0</span>]<br>     <span class="hljs-keyword">for</span>(<span class="hljs-keyword">let</span> i=<span class="hljs-number">1</span>;i&lt;len;i++)&#123;<br>         dp[i]=<span class="hljs-built_in">Math</span>.max(dp[i-<span class="hljs-number">1</span>]+nums[i],nums[i])<br>     &#125;<br>     <span class="hljs-keyword">let</span> res=dp[<span class="hljs-number">0</span>]<br>     <span class="hljs-keyword">for</span>(<span class="hljs-keyword">let</span> i=<span class="hljs-number">1</span>;i&lt;len;i++)&#123;<br>         res=<span class="hljs-built_in">Math</span>.max(res,dp[i])<br>     &#125;<br>     <span class="hljs-keyword">return</span> res<br>&#125;;<br></code></pre></td></tr></table></figure>]]></content>
+    
+    
+    <categories>
+      
+      <category>Leetcode题解</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>LeetCode</tag>
+      
+      <tag>算法与数据结构</tag>
+      
+      <tag>动态规划</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>leetcode题解-217</title>
+    <link href="/2021/10/15/20211015-leetcode%E9%A2%98%E8%A7%A3-217/"/>
+    <url>/2021/10/15/20211015-leetcode%E9%A2%98%E8%A7%A3-217/</url>
+    
+    <content type="html"><![CDATA[<h2 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h2><p><strong>题目</strong></p><p><a href="https://leetcode-cn.com/problems/contains-duplicate/">存在重复元素</a></p><p>创建一个哈希表，然后从遍历数组。检测哈希表中是否已存在当前字符，若存在，直接返回结果，若不存在，将当前字符加入哈希表。</p><h2 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@param <span class="hljs-type">&#123;number[]&#125;</span> <span class="hljs-variable">nums</span></span></span><br><span class="hljs-comment"> * <span class="hljs-doctag">@return <span class="hljs-type">&#123;boolean&#125;</span></span></span><br><span class="hljs-comment"> */</span><br><span class="hljs-keyword">var</span> containsDuplicate = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">nums</span>) </span>&#123;<br>    <span class="hljs-keyword">let</span> map=<span class="hljs-keyword">new</span> <span class="hljs-built_in">Map</span>()<br>    <span class="hljs-keyword">for</span>(item <span class="hljs-keyword">of</span> nums)&#123;<br>        <span class="hljs-keyword">if</span>(map.has(item))&#123;<br>            <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span><br>        &#125;<span class="hljs-keyword">else</span>&#123;<br>            map.set(item,<span class="hljs-number">1</span>)<br>        &#125;<br>    &#125;<br>    <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span><br>&#125;;<br></code></pre></td></tr></table></figure>]]></content>
+    
+    
+    <categories>
+      
+      <category>Leetcode题解</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>LeetCode</tag>
+      
+      <tag>算法与数据结构</tag>
+      
+      <tag>哈希表</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>leetcode题解-75</title>
     <link href="/2021/10/11/20211011-leetcode%E9%A2%98%E8%A7%A3-75/"/>
     <url>/2021/10/11/20211011-leetcode%E9%A2%98%E8%A7%A3-75/</url>
