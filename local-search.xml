@@ -4,6 +4,35 @@
   
   
   <entry>
+    <title>leetcode题解-283</title>
+    <link href="/2021/10/17/20211017-leetcode%E9%A2%98%E8%A7%A3-283/"/>
+    <url>/2021/10/17/20211017-leetcode%E9%A2%98%E8%A7%A3-283/</url>
+    
+    <content type="html"><![CDATA[<h2 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h2><p><a href="https://leetcode-cn.com/problems/move-zeroes/">移动零</a></p><p>设置循环不变量</p><p>[0,notZero) 非0</p><p>[zero,i] ==0</p><p>思路参考</p><p><a href="https://leetcode-cn.com/problems/move-zeroes/solution/zun-shou-xun-huan-bu-bian-shi-java-by-liweiwei1419/">liweiwei</a></p><h2 id="代码实现"><a href="#代码实现" class="headerlink" title="代码实现"></a>代码实现</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@param <span class="hljs-type">&#123;number[]&#125;</span> <span class="hljs-variable">nums</span></span></span><br><span class="hljs-comment"> * <span class="hljs-doctag">@return <span class="hljs-type">&#123;void&#125;</span> </span>Do not return anything, modify nums in-place instead.</span><br><span class="hljs-comment"> */</span><br><span class="hljs-keyword">var</span> moveZeroes = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">nums</span>) </span>&#123;<br>  <span class="hljs-keyword">const</span> len = nums.length;<br>  <span class="hljs-keyword">if</span> (len &lt; <span class="hljs-number">2</span>) <span class="hljs-keyword">return</span>;<br>  <span class="hljs-comment">//循环不变量</span><br>  <span class="hljs-comment">//[0,notZero)非0</span><br>  <span class="hljs-comment">//[zero..i] ==0</span><br>  <span class="hljs-keyword">let</span> notZero = <span class="hljs-number">0</span>;<br>  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i = <span class="hljs-number">0</span>; i &lt; len; i++) &#123;<br>    <span class="hljs-keyword">if</span> (nums[i] != <span class="hljs-number">0</span>) &#123;<br>      swap(nums, notZero, i);<br>      notZero++;<br>    &#125;<br>  &#125;<br>&#125;;<br><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">swap</span>(<span class="hljs-params">nums, index1, index2</span>) </span>&#123;<br>  [nums[index1], nums[index2]] = [nums[index2], nums[index1]];<br>&#125;<br><br></code></pre></td></tr></table></figure>]]></content>
+    
+    
+    <categories>
+      
+      <category>Leetcode题解</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>LeetCode</tag>
+      
+      <tag>算法与数据结构</tag>
+      
+      <tag>双指针</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>leetcode题解-53</title>
     <link href="/2021/10/15/20211015-leetcode%E9%A2%98%E8%A7%A3-53/"/>
     <url>/2021/10/15/20211015-leetcode%E9%A2%98%E8%A7%A3-53/</url>
