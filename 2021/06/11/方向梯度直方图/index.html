@@ -1,0 +1,183 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>方向梯度直方图 | Wang Yiran</title><meta name="keywords" content="目标检测,计算机视觉"><meta name="author" content="Wang Yiran"><meta name="copyright" content="Wang Yiran"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="介绍传统的目标检测流程可分为三个步骤，第一步是使用滑动窗口和图像金字塔从图片中选择一些区域。第二步是将选择出来的区域转化为人工设计的特征，可称为特征提取。第三步是将这些特征输入分类器进行分类。方向梯度直方图（Histogram of Oriented Gradients）以下简称 HOG，就是一种人工设计的特征，用来简化图像表述的特征描述符。 下图中左边的图片是一只猫，我们不仅可以看出猫身体上的特">
+<meta property="og:type" content="article">
+<meta property="og:title" content="方向梯度直方图">
+<meta property="og:url" content="https://timanchi.github.io/2021/06/11/%E6%96%B9%E5%90%91%E6%A2%AF%E5%BA%A6%E7%9B%B4%E6%96%B9%E5%9B%BE/index.html">
+<meta property="og:site_name" content="Wang Yiran">
+<meta property="og:description" content="介绍传统的目标检测流程可分为三个步骤，第一步是使用滑动窗口和图像金字塔从图片中选择一些区域。第二步是将选择出来的区域转化为人工设计的特征，可称为特征提取。第三步是将这些特征输入分类器进行分类。方向梯度直方图（Histogram of Oriented Gradients）以下简称 HOG，就是一种人工设计的特征，用来简化图像表述的特征描述符。 下图中左边的图片是一只猫，我们不仅可以看出猫身体上的特">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://images.weserv.nl/?url=https://article.biliimg.com/bfs/article/554584218db9279874e48559f9a8e86b9ecca94b.jpg">
+<meta property="article:published_time" content="2021-06-10T16:00:00.000Z">
+<meta property="article:modified_time" content="2022-08-06T03:23:14.169Z">
+<meta property="article:author" content="Wang Yiran">
+<meta property="article:tag" content="目标检测">
+<meta property="article:tag" content="计算机视觉">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://images.weserv.nl/?url=https://article.biliimg.com/bfs/article/554584218db9279874e48559f9a8e86b9ecca94b.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://timanchi.github.io/2021/06/11/%E6%96%B9%E5%90%91%E6%A2%AF%E5%BA%A6%E7%9B%B4%E6%96%B9%E5%9B%BE/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: true
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '方向梯度直方图',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2022-08-06 11:23:14'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.2.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://wyr-image.oss-cn-beijing.aliyuncs.com/img/bd5e70c725673e6eeca43c65ed22eade.jpeg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">10</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">5</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">2</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://images.weserv.nl/?url=https://article.biliimg.com/bfs/article/554584218db9279874e48559f9a8e86b9ecca94b.jpg')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">Wang Yiran</a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">方向梯度直方图</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="fa-fw post-meta-icon far fa-calendar-alt"></i><span class="post-meta-label">发表于</span><time datetime="2021-06-10T16:00:00.000Z" title="发表于 2021-06-11 00:00:00">2021-06-11</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B%E7%AC%94%E8%AE%B0/">目标检测笔记</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="方向梯度直方图"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h2 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h2><p>传统的目标检测流程可分为三个步骤，第一步是使用滑动窗口和图像金字塔从图片中选择一些区域。第二步是将选择出来的区域转化为人工设计的特征，可称为特征提取。第三步是将这些特征输入分类器进行分类。方向梯度直方图（Histogram of Oriented Gradients）以下简称 HOG，就是一种人工设计的特征，用来简化图像表述的特征描述符。</p>
+<p>下图中左边的图片是一只猫，我们不仅可以看出猫身体上的特征、颜色、纹理，而且还能看到背景。右边的图片是使用 HOG 来表示的图片，除了可以看到图中能看出猫的外形，其他的细节包括背景几乎都被去除了，故右边的图片是左边图片的一种简化表示形式。HOG 可以用来表示物体的形状、外形特征，将这些特征输入分类器就可以实现目标的分类。</p>
+<p><img src="https://wyr-image.oss-cn-beijing.aliyuncs.com/img/5fabda3172832e4915fe898b7bf3f88c-0.png"></p>
+<h2 id="方向梯度直方图流程"><a href="#方向梯度直方图流程" class="headerlink" title="方向梯度直方图流程"></a>方向梯度直方图流程</h2><h3 id="预先归一化（Normalization）"><a href="#预先归一化（Normalization）" class="headerlink" title="预先归一化（Normalization）"></a>预先归一化（Normalization）</h3><p>在计算梯度前可对图片归一化（Normalization）处理，归一化的目的是使所有的数值落入到统一的范围内，从而使算法能有更好的表现。</p>
+<h3 id="计算梯度"><a href="#计算梯度" class="headerlink" title="计算梯度"></a>计算梯度</h3><p>前面提到可以不用预先对图片进行归一化，故可以说 HOG 特征是从计算图像在水平方向和垂直方向上的梯度开始的。图像的梯度计算是使用卷积核对图像进行卷积操作，例如我们可以使用矩阵 <code>[[-1, 0, 1]]</code> 和 <code>[[-1], [0], [1]]</code> 分别与图像上的每个像素进行运算来获得水平和垂直方向上的梯度。<br>$$<br>G_x &#x3D; I \times W_x<br>$$</p>
+<p>$$<br>G_y &#x3D; I \times W_y<br>$$</p>
+<p>上面两个公式分别计算水平、垂直方向上的梯度 $ G_x $、$\ G_y $。其中 $I$ 是输入图片，$W_x$ 表示水平方向的卷积核，$W_y$ 表示垂直方向的卷积核。下面两张图片给我们展示了经过梯度计算后的图片是什么样子，左图表示计算图片的水平梯度，右图表示计算图片的垂直梯度。相较于原始图片，下面的两张图片中的信息减少了很多，整个 HOG 的过程就是逐步减少图片中的<strong>无用</strong>信息，只展示给我们感兴趣的特征。</p>
+<p><img src="https://wyr-image.oss-cn-beijing.aliyuncs.com/img/536c2f2dd3dfa07d2ccadd87889e408a-0.png"></p>
+<p>现在已经有了水平方向的梯度 $G_x$ 和垂直方向的梯度 $G_y$，接下来我们要计算梯度的幅值和方向。计算梯度幅值和方向是为了进一步计算方向梯度直方图。</p>
+<p>$$ G &#x3D; \sqrt {G_x^2 + G_y^2} $$</p>
+<p>$$ \theta &#x3D; \arctan \frac{G_y}{G_x} $$</p>
+<p>上面的两个公式分别计算每个像素的梯度幅值 $G$ 和梯度方向 $\theta$。下面左图是合并水平、垂直方向上的梯度获得的梯度幅值，可以看到相较于水平、垂直方向上的图片，左图中猫的轮廓更清晰明显。右图表示图片中的梯度方向。</p>
+<p><img src="https://wyr-image.oss-cn-beijing.aliyuncs.com/img/89354d055037be42b5086de30837abd6-0.png"></p>
+<h3 id="方向梯度直方图"><a href="#方向梯度直方图" class="headerlink" title="方向梯度直方图"></a>方向梯度直方图</h3><p>现在我们已经有了梯度幅值 $G$ 和梯度方向 $\theta$，接下来我们就可以计算方向梯度直方图了。在计算方向梯度直方图之前，我们需要将图片分成若干个小方格（Cells），为避免歧义下文皆书写为 Cell 或 Cells 。例如，下图是一张宽高为 $649\times 385$ 的图片，我们将其平均分割成若干个 Cells，每个 Cell 内包含 $8\times 8$ 个像素，所以图片的高被分为 $\lfloor 385\div8 \rfloor &#x3D; 48$ 份，图片的宽被分为 $\lfloor 649\div8 \rfloor &#x3D; 81$ 份（$\lfloor\quad\rfloor$ 表示向下取整），故整张图片有 $48\times 81$ 个 Cells。</p>
+<p><img src="https://wyr-image.oss-cn-beijing.aliyuncs.com/img/213aecaf882917765493608c07050ec9-0.png"></p>
+<p>至此我们已经将图片分成许多 Cells，对于每一个 Cell，使用 $G$ 和 $\theta$ 来构建方向梯度直方图。首先我们先选择梯度方向的范围，梯度方向的范围可分为 0 到 180 度（无符号）和 0 到 360 度（有符号），通常使用 0 到 180 度的范围。然后将 0 到 180 度的范围分成 9 个区间（bins)，分别为 0 到 20 度，20 到 40 度， 40 到 60 度 …… 160 到 180 度。每个像素都有一个梯度幅值和一个梯度方向，所以方向梯度直方图的计算就是每个像素所对应的梯度方向落在 9 个区间中的哪一个，那么该像素的梯度幅值就在该区间中累加。</p>
+<p>下图是一个计算方向梯度图的例子，对于红色方框中的像素，假设其中有些像素对应的梯度方向落在 0 到 20 区间，那么将这些像素对应的梯度幅值在 0 到 20 区间内进行累加，同理其他区间也做同样的运算，最终得到下图中右边的方向梯度直方图。同样地，整张图片中的所有 Cells 都用同样的方法计算方向梯度直方图。</p>
+<p><img src="https://wyr-image.oss-cn-beijing.aliyuncs.com/img/156af366316a934921638c21804d8eb0-0.png"></p>
+<h3 id="区域（Blocks）归一化"><a href="#区域（Blocks）归一化" class="headerlink" title="区域（Blocks）归一化"></a>区域（Blocks）归一化</h3><p>我们已经将图像分成若干个 Cells，并且计算了每个 Cell 的方向梯度直方图。接下来我们要对图像进行区域归一化处理，归一化的目的是减少光照变化对图像梯度的影响。 现在让我们来看看如何进行归一化处理。</p>
+<p>首先我们先来介绍什么是区域（Blocks），为避免歧义下文皆书写为 Block 或 Blocks，前面我们将图像分成若干个 Cells，每个 Cell 内有若干个像素，类似地，一个 Block 是一块由若干个 Cells 组成的矩形。对图像进行归一化的过程类似于前面实验学习的滑动窗口，将一个 Block 从左向右、从上向下在图中滑动，然后在每个 Block 区域内进行归一化计算。</p>
+<p>让我们通过下图来理解如何通过 Blocks 对图片进行归一化。 下图中右边图片是我们从原图片中选取的一部分，在这块区域里面有若干个 Cells，我们用红色矩形框表示一个 Blcok，红色矩形框在图上向右滑动一个 Cell 的步长后我们就得到了蓝色矩形框，所以区域归一化的方法就是设定一个尺寸为 $K\times K$ 个 Cells 的 Block，在图上从左向右、从上向下滑动，然后在每个 Block 内进行归一化。</p>
+<p><img src="https://wyr-image.oss-cn-beijing.aliyuncs.com/img/cb9ff95f8bc91f1d442b26fd71cf98fb-0.png"></p>
+<p>在每个 Block 内有 $2\times 2$ 个 Cells，前面我们将梯度方向分为 9 个区间并为每个 Cell 计算了方向梯度直方图，故每个 Cell 有 9 个向量，则在一个 Block 内共有 $2\times 2\times 9$ 个向量。然后我们可以使用 $L1$ 范数或 $L2$ 范数对 Block 内的向量进行归一化。其中使用 $L2$ 范数进行归一化的效果相对较好，下面就是使用 $L2$ 范数归一化的公式，即 Block 内的每个向量除以由 Block 内所有向量计算得到的 $L2$ 范数。其中 $v_i$ 表示 Block 内的向量，$\epsilon$ 的作用是防止出现分母为 0 的情况，它是一个很小的值。</p>
+<p>$$ v &#x3D; \frac{v_i}{\sqrt{\sum_{i&#x3D;1}^n{v_i^2} + \epsilon^2}} $$</p>
+<p>从上图中可以看出每一个 Cell 不止出现在一个 Block 内，也就是说一个 Cell 将被重复的用于归一化计算中，这样做会看似比较冗余，但是会提高特征描述的表现。最后对所有的 Block 完成归一化计算，合并所有获得的归一化后的向量，这样我们就完成了图像的 HOG 特征化表示。</p>
+<h2 id="使用-Scikit-image-实现方向梯度直方图"><a href="#使用-Scikit-image-实现方向梯度直方图" class="headerlink" title="使用 Scikit-image 实现方向梯度直方图"></a>使用 Scikit-image 实现方向梯度直方图</h2><p>以上所述的概念或公式也许没法在短时间内理解消化，不过也不用太过担心，因为 HOG 已经在现有的一些算法库中实现，所以我们完全不用花时间再去复现它。</p>
+<p>可以使用 <code>feature.hog</code> 用于计算图片的方向梯度直方图。该函数的参数意义如下所示。</p>
+<ul>
+<li>第一个参数 <code>image</code> 表示输入图像。</li>
+<li><code>orientations</code> 表示要将梯度方向分成几个区间，这里我们将梯度方向分为 9 个区间。</li>
+<li><code>pixels_per_cell</code> 表示 Cell 的尺寸，即一个 Cell 中有几个像素，需要传递一个元组给该参数，我们将 <code>(8, 8)</code> 传递给该参数。</li>
+<li><code>cells_per_block</code> 表示每个 Block 的尺寸，即一个 Block 中有几个 Cells，这里需要传递一个元组给该参数，我们将 <code>(2, 2)</code> 传递给该参数。</li>
+<li><code>transform_sqrt</code> 表示伽马校正，我们将 <code>True</code> 传递给该参数表示使用伽马校正预先对图片进行归一化处理。</li>
+<li><code>visualize</code> 表示可视化，将 <code>True</code> 传递给该参数表示返回 HOG 图像。</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">from skimage import feature</span><br><span class="line">from skimage import exposure</span><br><span class="line">from matplotlib import pyplot as plt</span><br><span class="line">import cv2</span><br><span class="line"></span><br><span class="line">%matplotlib inline</span><br><span class="line">(o, hog) = feature.hog(image, orientations=9, pixels_per_cell=(8, 8),</span><br><span class="line">    cells_per_block=(2, 2), transform_sqrt=True, visualize=True)</span><br></pre></td></tr></table></figure>
+
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="https://timanchi.github.io">Wang Yiran</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://timanchi.github.io/2021/06/11/%E6%96%B9%E5%90%91%E6%A2%AF%E5%BA%A6%E7%9B%B4%E6%96%B9%E5%9B%BE/">https://timanchi.github.io/2021/06/11/方向梯度直方图/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://timanchi.github.io" target="_blank">Wang Yiran</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B/">目标检测</a><a class="post-meta__tags" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89/">计算机视觉</a></div><div class="post_share"><div class="social-share" data-image="https://images.weserv.nl/?url=https://article.biliimg.com/bfs/article/554584218db9279874e48559f9a8e86b9ecca94b.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2021/06/12/%E5%9B%BE%E5%83%8F%E5%88%86%E7%B1%BB%E5%9F%BA%E6%9C%AC%E7%9F%A5%E8%AF%86/"><img class="prev-cover" src="https://images.weserv.nl/?url=https://article.biliimg.com/bfs/article/554584218db9279874e48559f9a8e86b9ecca94b.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">图像分类的基本知识</div></div></a></div><div class="next-post pull-right"><a href="/2021/06/08/%E5%9B%BE%E5%83%8F%E9%87%91%E5%AD%97%E5%A1%94/"><img class="next-cover" src="https://images.weserv.nl/?url=https://article.biliimg.com/bfs/article/554584218db9279874e48559f9a8e86b9ecca94b.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">图像金字塔</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2021/07/10/R-CNN/" title="R-CNN"><img class="cover" src="https://images.weserv.nl/?url=https://article.biliimg.com/bfs/article/554584218db9279874e48559f9a8e86b9ecca94b.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-07-10</div><div class="title">R-CNN</div></div></a></div><div><a href="/2021/06/08/%E5%9B%BE%E5%83%8F%E9%87%91%E5%AD%97%E5%A1%94/" title="图像金字塔"><img class="cover" src="https://images.weserv.nl/?url=https://article.biliimg.com/bfs/article/554584218db9279874e48559f9a8e86b9ecca94b.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-06-08</div><div class="title">图像金字塔</div></div></a></div><div><a href="/2021/06/27/%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/" title="卷积神经网络"><img class="cover" src="https://images.weserv.nl/?url=https://article.biliimg.com/bfs/article/554584218db9279874e48559f9a8e86b9ecca94b.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-06-27</div><div class="title">卷积神经网络</div></div></a></div><div><a href="/2021/06/12/%E5%9B%BE%E5%83%8F%E5%88%86%E7%B1%BB%E5%9F%BA%E6%9C%AC%E7%9F%A5%E8%AF%86/" title="图像分类的基本知识"><img class="cover" src="https://images.weserv.nl/?url=https://article.biliimg.com/bfs/article/554584218db9279874e48559f9a8e86b9ecca94b.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-06-12</div><div class="title">图像分类的基本知识</div></div></a></div><div><a href="/2021/06/21/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E4%B8%8E%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/" title="非极大值抑制"><img class="cover" src="https://images.weserv.nl/?url=https://article.biliimg.com/bfs/article/554584218db9279874e48559f9a8e86b9ecca94b.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-06-21</div><div class="title">非极大值抑制</div></div></a></div><div><a href="/2021/05/28/%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B%E4%BB%8B%E7%BB%8D%E5%92%8C%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3/" title="目标检测介绍和滑动窗口"><img class="cover" src="https://images.weserv.nl/?url=https://article.biliimg.com/bfs/article/554584218db9279874e48559f9a8e86b9ecca94b.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-05-28</div><div class="title">目标检测介绍和滑动窗口</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://wyr-image.oss-cn-beijing.aliyuncs.com/img/bd5e70c725673e6eeca43c65ed22eade.jpeg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Wang Yiran</div><div class="author-info__description"></div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">10</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">5</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">2</div></a></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%8B%E7%BB%8D"><span class="toc-number">1.</span> <span class="toc-text">介绍</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%96%B9%E5%90%91%E6%A2%AF%E5%BA%A6%E7%9B%B4%E6%96%B9%E5%9B%BE%E6%B5%81%E7%A8%8B"><span class="toc-number">2.</span> <span class="toc-text">方向梯度直方图流程</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%A2%84%E5%85%88%E5%BD%92%E4%B8%80%E5%8C%96%EF%BC%88Normalization%EF%BC%89"><span class="toc-number">2.1.</span> <span class="toc-text">预先归一化（Normalization）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AE%A1%E7%AE%97%E6%A2%AF%E5%BA%A6"><span class="toc-number">2.2.</span> <span class="toc-text">计算梯度</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%B9%E5%90%91%E6%A2%AF%E5%BA%A6%E7%9B%B4%E6%96%B9%E5%9B%BE"><span class="toc-number">2.3.</span> <span class="toc-text">方向梯度直方图</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8C%BA%E5%9F%9F%EF%BC%88Blocks%EF%BC%89%E5%BD%92%E4%B8%80%E5%8C%96"><span class="toc-number">2.4.</span> <span class="toc-text">区域（Blocks）归一化</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8-Scikit-image-%E5%AE%9E%E7%8E%B0%E6%96%B9%E5%90%91%E6%A2%AF%E5%BA%A6%E7%9B%B4%E6%96%B9%E5%9B%BE"><span class="toc-number">3.</span> <span class="toc-text">使用 Scikit-image 实现方向梯度直方图</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2022/03/29/%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%B8%B8%E8%A7%81%E9%A2%98%E5%9E%8B/" title="数组和链表的常见题型"><img src="https://images.weserv.nl/?url=https://article.biliimg.com/bfs/article/554584218db9279874e48559f9a8e86b9ecca94b.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="数组和链表的常见题型"/></a><div class="content"><a class="title" href="/2022/03/29/%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%B8%B8%E8%A7%81%E9%A2%98%E5%9E%8B/" title="数组和链表的常见题型">数组和链表的常见题型</a><time datetime="2022-03-28T16:00:00.000Z" title="发表于 2022-03-29 00:00:00">2022-03-29</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/03/28/%E6%95%B0%E7%BB%84%E5%92%8C%E9%93%BE%E8%A1%A8%E7%9A%84%E5%B8%B8%E8%A7%81%E9%A2%98%E5%9E%8B/" title="数组和链表的常见题型"><img src="https://images.weserv.nl/?url=https://article.biliimg.com/bfs/article/554584218db9279874e48559f9a8e86b9ecca94b.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="数组和链表的常见题型"/></a><div class="content"><a class="title" href="/2022/03/28/%E6%95%B0%E7%BB%84%E5%92%8C%E9%93%BE%E8%A1%A8%E7%9A%84%E5%B8%B8%E8%A7%81%E9%A2%98%E5%9E%8B/" title="数组和链表的常见题型">数组和链表的常见题型</a><time datetime="2022-03-27T16:00:00.000Z" title="发表于 2022-03-28 00:00:00">2022-03-28</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/07/10/R-CNN/" title="R-CNN"><img src="https://images.weserv.nl/?url=https://article.biliimg.com/bfs/article/554584218db9279874e48559f9a8e86b9ecca94b.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="R-CNN"/></a><div class="content"><a class="title" href="/2021/07/10/R-CNN/" title="R-CNN">R-CNN</a><time datetime="2021-07-09T16:00:00.000Z" title="发表于 2021-07-10 00:00:00">2021-07-10</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/06/27/%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/" title="卷积神经网络"><img src="https://images.weserv.nl/?url=https://article.biliimg.com/bfs/article/554584218db9279874e48559f9a8e86b9ecca94b.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="卷积神经网络"/></a><div class="content"><a class="title" href="/2021/06/27/%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/" title="卷积神经网络">卷积神经网络</a><time datetime="2021-06-26T16:00:00.000Z" title="发表于 2021-06-27 00:00:00">2021-06-27</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/06/21/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E4%B8%8E%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/" title="非极大值抑制"><img src="https://images.weserv.nl/?url=https://article.biliimg.com/bfs/article/554584218db9279874e48559f9a8e86b9ecca94b.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="非极大值抑制"/></a><div class="content"><a class="title" href="/2021/06/21/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E4%B8%8E%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/" title="非极大值抑制">非极大值抑制</a><time datetime="2021-06-20T16:00:00.000Z" title="发表于 2021-06-21 00:00:00">2021-06-21</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url('https://images.weserv.nl/?url=https://article.biliimg.com/bfs/article/554584218db9279874e48559f9a8e86b9ecca94b.jpg')"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2022 By Wang Yiran</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div></div></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><script src="/js/search/local-search.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

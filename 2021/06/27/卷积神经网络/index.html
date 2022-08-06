@@ -1,0 +1,164 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>卷积神经网络 | Wang Yiran</title><meta name="keywords" content="目标检测,计算机视觉"><meta name="author" content="Wang Yiran"><meta name="copyright" content="Wang Yiran"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="介绍在之前的文章中，我们了解到神经网络的输入层中的每个节点都与下一层的每个节点相连接，我们称这种连接方式为全连接（Fully-connected），但是这种全连接方式存在一些明显的缺陷。首先如果使用全连接网络处理图片的话，需要将图像矩阵转换为一列向量，这样就破坏了图像的空间信息。其次假设我们将一张尺寸为 $240\times240\times3$ 的三通道图片作为全连接网络的输入，则在输入层总共需">
+<meta property="og:type" content="article">
+<meta property="og:title" content="卷积神经网络">
+<meta property="og:url" content="https://timanchi.github.io/2021/06/27/%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/index.html">
+<meta property="og:site_name" content="Wang Yiran">
+<meta property="og:description" content="介绍在之前的文章中，我们了解到神经网络的输入层中的每个节点都与下一层的每个节点相连接，我们称这种连接方式为全连接（Fully-connected），但是这种全连接方式存在一些明显的缺陷。首先如果使用全连接网络处理图片的话，需要将图像矩阵转换为一列向量，这样就破坏了图像的空间信息。其次假设我们将一张尺寸为 $240\times240\times3$ 的三通道图片作为全连接网络的输入，则在输入层总共需">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://images.weserv.nl/?url=https://article.biliimg.com/bfs/article/554584218db9279874e48559f9a8e86b9ecca94b.jpg">
+<meta property="article:published_time" content="2021-06-26T16:00:00.000Z">
+<meta property="article:modified_time" content="2022-08-06T05:29:04.081Z">
+<meta property="article:author" content="Wang Yiran">
+<meta property="article:tag" content="目标检测">
+<meta property="article:tag" content="计算机视觉">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://images.weserv.nl/?url=https://article.biliimg.com/bfs/article/554584218db9279874e48559f9a8e86b9ecca94b.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://timanchi.github.io/2021/06/27/%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: true
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '卷积神经网络',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2022-08-06 13:29:04'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.2.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://wyr-image.oss-cn-beijing.aliyuncs.com/img/bd5e70c725673e6eeca43c65ed22eade.jpeg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">10</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">5</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">2</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://images.weserv.nl/?url=https://article.biliimg.com/bfs/article/554584218db9279874e48559f9a8e86b9ecca94b.jpg')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">Wang Yiran</a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">卷积神经网络</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="fa-fw post-meta-icon far fa-calendar-alt"></i><span class="post-meta-label">发表于</span><time datetime="2021-06-26T16:00:00.000Z" title="发表于 2021-06-27 00:00:00">2021-06-27</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B%E7%AC%94%E8%AE%B0/">目标检测笔记</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="卷积神经网络"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h2 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h2><p>在之前的文章中，我们了解到神经网络的输入层中的每个节点都与下一层的每个节点相连接，我们称这种连接方式为全连接（Fully-connected），但是这种全连接方式存在一些明显的缺陷。首先如果使用全连接网络处理图片的话，需要将图像矩阵转换为一列向量，这样就破坏了图像的空间信息。其次假设我们将一张尺寸为 $240\times240\times3$ 的三通道图片作为全连接网络的输入，则在输入层总共需要 172800个权重，如此多的参数需要很大的计算量和时间处理，并且大量的参数还会导致过拟合（模型在训练集上表现好，在测试集上表现差，泛化能力差）。在计算机视觉中广泛应用的卷积神经网络可以用来克服上述问题，在卷积神经网络中我们采取局部连接节点的方式代替全连接的方式，通常一个卷积神经网络由输入层、卷积层，激活层、池化层和全连接层构成。</p>
+<h2 id="卷积和卷积核"><a href="#卷积和卷积核" class="headerlink" title="卷积和卷积核"></a>卷积和卷积核</h2><p>在开始学习卷积神经网络前，我们需要了解卷积和卷积核（Kernel）的相关内容。通常情况下，深度学习中所谓的<strong>卷积</strong>实际上是<strong>互相关</strong>操作（在后面的内容中我将用<strong>卷积</strong>来称呼<strong>互相关</strong>操作），如下图，两个矩阵的卷积即是将两个矩阵中对应位置的元素相乘再求和，则这两个矩阵的卷积结果是 $10\times1 + 56\times2 + 34\times3 + 12\times4 + 94\times5 + 16\times6 + 0\times7 + 100\times8 + 11\times9 &#x3D; 1737$。</p>
+<p><img src="https://wyr-image.oss-cn-beijing.aliyuncs.com/img/2351bae26c14d0661e8d241bde0495cd-0.png"></p>
+<p>现在让我们来了解下图片的卷积是如何操作的，在图片上进行卷积需要用到卷积核（kernel），卷积核实际上就是一个矩阵，我们让这个矩阵在图像上从左向右、从上向下滑动，在滑动的过程中矩阵所覆盖的区域内的像素值与矩阵内元素按位相乘再求和，这些求和结果组成一个新的矩阵我们称之为特征图（Feature map）。</p>
+<p>这个过程类似我们学习过的滑动窗口，假设我们使用一个 $3\times3$ 的卷积核（下图中间的矩阵，矩阵中每个值都为 <code>1/9</code>）对一张 $7\times7$ 尺寸的图片进行卷积，那么首先将卷积核的左上角顶点与图片的左上角顶点重叠，下图左边矩阵上的红色区域为重叠区域，然后按位计算红色矩形区域的元素与卷积核中的元素的乘积再将所有乘积结果求和，就得到了特征图上的第一个值为 <code>67</code>，然后按照从左向右、从上向下的顺序依次移动 1 个像素的距离（每次移动的像素个数称为步长（Stride），也可以移动多个像素）然后再计算重叠部分的卷积直到卷积核到达图片的左下角（下图左边矩阵的左下角虚线框），这样我们就获得了一个 $5\times5$ 的特征图。需要注意的是卷积核的尺寸必须是奇数，例如 $1\times1$、$3\times3$、$5\times5$ 等。</p>
+<p><img src="https://wyr-image.oss-cn-beijing.aliyuncs.com/img/c5807193099dbccd43c4797f766c94f8-0.png"></p>
+<p>使用上述卷积方法得到的特征图尺寸会缩小，同时会丢失图片的边缘信息，因为卷积核移动到图片的边缘就结束了。为了解决这个问题，我们可以使用填充（Padding）方法，填充就是在图片外围填充像素值为 0 的像素点（见下图最左边矩阵），然后通过卷积计算得到的特征图尺寸就和输入图片的尺寸一样了。填充不仅可以在卷积过程中保留图像边缘信息，还可以对不同尺寸的图片进行填充，统一图片尺寸。</p>
+<p><img src="https://wyr-image.oss-cn-beijing.aliyuncs.com/img/b191e726772e2704528b06ecae9afd18-0.png"></p>
+<h2 id="卷积层"><a href="#卷积层" class="headerlink" title="卷积层"></a>卷积层</h2><p>卷积层是卷积神经网络的最重要组成部分，卷积层就是由不同数量和尺寸的卷积核构成的，其作用是用于图像的局部特征提取。在卷积神经网络中我们经常会遇到一个概念称为深度（Depth），深度与图像的通道类似，我们使用一个卷积核对图像进行卷积操作后会得到一个二维特征图，这个特征图和输入图像一样具有高和宽，使用多个尺寸相同的卷积核对输入图像进行卷积时我们将得到多个特征图，将这些特征图堆叠起来将得到一个三维特征图，这三个维度分别对应宽、高和深度，深度值就等于卷积核的个数。</p>
+<p>如下图，我们使用 5 个尺寸相同的卷积核对图像进行卷积，我们将得到 5 个特征图，将这 5 个特征图堆叠起来就是一个具有宽、高和深度的三维矩阵，这个矩阵的深度就是 5。提到深度我们还需要了解一个概念称为滤波器（Filter），滤波器是由多个卷积核堆叠而成，其深度是其内卷积核的数量，当卷积核的个数为 1 时可以认为滤波器等同于卷积核。当给网络输入一张 RGB 图片时，由于图片有三个通道，需要用三个卷积核对图片进行卷积，这三个卷积核就构成一个滤波器。</p>
+<p><img src="https://wyr-image.oss-cn-beijing.aliyuncs.com/img/5b1d3cb88c0e2e66df4185963624d453-0.png"></p>
+<p>在卷积神经网络中我们采取局部连接节点的方式代替全连接的方式，如下图，右边两个圆表示神经元节点，每个节点只与图片上的部分区域的像素值（下图中间的矩阵表示局部像素点）连接，这些区域之外的其他像素值都不会影响与这个区域相连的节点，这些区域称为对应节点的感受野（Receptive field）。如果输入网络的图像尺寸是 $16\times16\times3$（图像的宽、高是 16，通道数是 3），假设感受野的尺寸是 $3\times3$ 那么每个与这个区域连接的节点将接受 $3\times3\times3 &#x3D; 27$ 个权重（图像有三个通道）。假设我们输入的尺寸是 $5\times5\times100$ 以及感受野是 $3\times3$，则与之相连的节点所接受的权重个数是 $3\times3\times100 &#x3D; 900$ 。</p>
+<p><img src="https://wyr-image.oss-cn-beijing.aliyuncs.com/img/606acbaeffb36f7e5ad8cdcf42732388-0.png"></p>
+<h2 id="激活层"><a href="#激活层" class="headerlink" title="激活层"></a>激活层</h2><p>激活层在每一个卷积层后，其作用是引入了非线性因素为节点建立一个输出边界，判断各区域特征强弱来筛选有用特征。例如通过卷积后的一块区域没能达到<strong>激活</strong>阈值，则激活函数将输出 0，表示这块区域提取的特征无关紧要。在卷积神经网络中比较常用的是 ReLU 函数，在本节实验我们并不需要了解 ReLU 函数的公式，因为现有的开源框架中已经内置了一些激活函数，我们只需要调用就行了。</p>
+<h2 id="池化层"><a href="#池化层" class="headerlink" title="池化层"></a>池化层</h2><p>池化（Pooling）最直观的作用就是压缩输入的尺寸（当卷积核的步长大于 1 时也可以压缩输入尺寸），池化层通常放在激活层之后。池化方法有两种，最大池化（Max pooling）和平均池化（Average pooling）。最大池化就是选定域内最大值来表示该区域，下图中我们在 $4\times4$ 的矩阵中选定 $2\times2$ 区域进行池化，选出这个区域内最大值 <code>46</code> 来表示该区域，然后向左移动 2 个步长，在新的区域中选择最大值 <code>105</code> 来表示该区域，依次类推我们将原来的 $4\times4$ 矩阵压缩到 $2\times2$ 尺寸。同理平均池化就是选定区域内的平均值表示该区域。</p>
+<p><img src="https://wyr-image.oss-cn-beijing.aliyuncs.com/img/8ddaa3ef2fee05a40ca3f977ee8f0df9-0.png"></p>
+<h2 id="全连接层"><a href="#全连接层" class="headerlink" title="全连接层"></a>全连接层</h2><p>全连接层就是前一层的激活值与这一层所有的节点相连</p>
+<h2 id="Dropout"><a href="#Dropout" class="headerlink" title="Dropout"></a>Dropout</h2><p>在全连接层后我们通常会进行 Dropout 操作，Dropout 是一种预防过拟合提高模型准确率的方法。其原理是在训练过程中以一定概率随机<strong>丢弃</strong>部分节点从而提高模型的泛化能力</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="https://timanchi.github.io">Wang Yiran</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://timanchi.github.io/2021/06/27/%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/">https://timanchi.github.io/2021/06/27/卷积神经网络/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://timanchi.github.io" target="_blank">Wang Yiran</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B/">目标检测</a><a class="post-meta__tags" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89/">计算机视觉</a></div><div class="post_share"><div class="social-share" data-image="https://images.weserv.nl/?url=https://article.biliimg.com/bfs/article/554584218db9279874e48559f9a8e86b9ecca94b.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2021/07/10/R-CNN/"><img class="prev-cover" src="https://images.weserv.nl/?url=https://article.biliimg.com/bfs/article/554584218db9279874e48559f9a8e86b9ecca94b.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">R-CNN</div></div></a></div><div class="next-post pull-right"><a href="/2021/06/21/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E4%B8%8E%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/"><img class="next-cover" src="https://images.weserv.nl/?url=https://article.biliimg.com/bfs/article/554584218db9279874e48559f9a8e86b9ecca94b.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">非极大值抑制</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2021/07/10/R-CNN/" title="R-CNN"><img class="cover" src="https://images.weserv.nl/?url=https://article.biliimg.com/bfs/article/554584218db9279874e48559f9a8e86b9ecca94b.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-07-10</div><div class="title">R-CNN</div></div></a></div><div><a href="/2021/06/08/%E5%9B%BE%E5%83%8F%E9%87%91%E5%AD%97%E5%A1%94/" title="图像金字塔"><img class="cover" src="https://images.weserv.nl/?url=https://article.biliimg.com/bfs/article/554584218db9279874e48559f9a8e86b9ecca94b.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-06-08</div><div class="title">图像金字塔</div></div></a></div><div><a href="/2021/06/12/%E5%9B%BE%E5%83%8F%E5%88%86%E7%B1%BB%E5%9F%BA%E6%9C%AC%E7%9F%A5%E8%AF%86/" title="图像分类的基本知识"><img class="cover" src="https://images.weserv.nl/?url=https://article.biliimg.com/bfs/article/554584218db9279874e48559f9a8e86b9ecca94b.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-06-12</div><div class="title">图像分类的基本知识</div></div></a></div><div><a href="/2021/06/11/%E6%96%B9%E5%90%91%E6%A2%AF%E5%BA%A6%E7%9B%B4%E6%96%B9%E5%9B%BE/" title="方向梯度直方图"><img class="cover" src="https://images.weserv.nl/?url=https://article.biliimg.com/bfs/article/554584218db9279874e48559f9a8e86b9ecca94b.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-06-11</div><div class="title">方向梯度直方图</div></div></a></div><div><a href="/2021/06/21/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E4%B8%8E%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/" title="非极大值抑制"><img class="cover" src="https://images.weserv.nl/?url=https://article.biliimg.com/bfs/article/554584218db9279874e48559f9a8e86b9ecca94b.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-06-21</div><div class="title">非极大值抑制</div></div></a></div><div><a href="/2021/05/28/%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B%E4%BB%8B%E7%BB%8D%E5%92%8C%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3/" title="目标检测介绍和滑动窗口"><img class="cover" src="https://images.weserv.nl/?url=https://article.biliimg.com/bfs/article/554584218db9279874e48559f9a8e86b9ecca94b.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-05-28</div><div class="title">目标检测介绍和滑动窗口</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://wyr-image.oss-cn-beijing.aliyuncs.com/img/bd5e70c725673e6eeca43c65ed22eade.jpeg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Wang Yiran</div><div class="author-info__description"></div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">10</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">5</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">2</div></a></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%8B%E7%BB%8D"><span class="toc-number">1.</span> <span class="toc-text">介绍</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8D%B7%E7%A7%AF%E5%92%8C%E5%8D%B7%E7%A7%AF%E6%A0%B8"><span class="toc-number">2.</span> <span class="toc-text">卷积和卷积核</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8D%B7%E7%A7%AF%E5%B1%82"><span class="toc-number">3.</span> <span class="toc-text">卷积层</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%BF%80%E6%B4%BB%E5%B1%82"><span class="toc-number">4.</span> <span class="toc-text">激活层</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B1%A0%E5%8C%96%E5%B1%82"><span class="toc-number">5.</span> <span class="toc-text">池化层</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%A8%E8%BF%9E%E6%8E%A5%E5%B1%82"><span class="toc-number">6.</span> <span class="toc-text">全连接层</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Dropout"><span class="toc-number">7.</span> <span class="toc-text">Dropout</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2022/03/29/%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%B8%B8%E8%A7%81%E9%A2%98%E5%9E%8B/" title="数组和链表的常见题型"><img src="https://images.weserv.nl/?url=https://article.biliimg.com/bfs/article/554584218db9279874e48559f9a8e86b9ecca94b.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="数组和链表的常见题型"/></a><div class="content"><a class="title" href="/2022/03/29/%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%B8%B8%E8%A7%81%E9%A2%98%E5%9E%8B/" title="数组和链表的常见题型">数组和链表的常见题型</a><time datetime="2022-03-28T16:00:00.000Z" title="发表于 2022-03-29 00:00:00">2022-03-29</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/03/28/%E6%95%B0%E7%BB%84%E5%92%8C%E9%93%BE%E8%A1%A8%E7%9A%84%E5%B8%B8%E8%A7%81%E9%A2%98%E5%9E%8B/" title="数组和链表的常见题型"><img src="https://images.weserv.nl/?url=https://article.biliimg.com/bfs/article/554584218db9279874e48559f9a8e86b9ecca94b.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="数组和链表的常见题型"/></a><div class="content"><a class="title" href="/2022/03/28/%E6%95%B0%E7%BB%84%E5%92%8C%E9%93%BE%E8%A1%A8%E7%9A%84%E5%B8%B8%E8%A7%81%E9%A2%98%E5%9E%8B/" title="数组和链表的常见题型">数组和链表的常见题型</a><time datetime="2022-03-27T16:00:00.000Z" title="发表于 2022-03-28 00:00:00">2022-03-28</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/07/10/R-CNN/" title="R-CNN"><img src="https://images.weserv.nl/?url=https://article.biliimg.com/bfs/article/554584218db9279874e48559f9a8e86b9ecca94b.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="R-CNN"/></a><div class="content"><a class="title" href="/2021/07/10/R-CNN/" title="R-CNN">R-CNN</a><time datetime="2021-07-09T16:00:00.000Z" title="发表于 2021-07-10 00:00:00">2021-07-10</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/06/27/%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/" title="卷积神经网络"><img src="https://images.weserv.nl/?url=https://article.biliimg.com/bfs/article/554584218db9279874e48559f9a8e86b9ecca94b.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="卷积神经网络"/></a><div class="content"><a class="title" href="/2021/06/27/%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/" title="卷积神经网络">卷积神经网络</a><time datetime="2021-06-26T16:00:00.000Z" title="发表于 2021-06-27 00:00:00">2021-06-27</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/06/21/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E4%B8%8E%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/" title="非极大值抑制"><img src="https://images.weserv.nl/?url=https://article.biliimg.com/bfs/article/554584218db9279874e48559f9a8e86b9ecca94b.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="非极大值抑制"/></a><div class="content"><a class="title" href="/2021/06/21/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E4%B8%8E%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/" title="非极大值抑制">非极大值抑制</a><time datetime="2021-06-20T16:00:00.000Z" title="发表于 2021-06-21 00:00:00">2021-06-21</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url('https://images.weserv.nl/?url=https://article.biliimg.com/bfs/article/554584218db9279874e48559f9a8e86b9ecca94b.jpg')"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2022 By Wang Yiran</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div></div></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><script src="/js/search/local-search.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

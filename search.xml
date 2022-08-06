@@ -54,6 +54,222 @@
     </entry>
     
     
+    
+    <entry>
+      <title>R-CNN</title>
+      <link href="/2021/07/10/R-CNN/"/>
+      <url>/2021/07/10/R-CNN/</url>
+      
+        <content type="html"><![CDATA[<p>R-CNN（Rich feature hierarchies for accurate object detection and semantic segmentation）是最早将深度学习应用于目标检测领域的方法之一，其使用基于候选区域的方法替代滑动窗口来寻找图像中可能存在目标的区域，使用卷积神经网络替代人工设计的特征用于目标特征的提取，然后使用支持向量机（SVM）判断目标类别并使用边框回归（Bounding-Box Regression）修正候选框（Bounding Box）的位置。相较于传统的方法，R-CNN 提高了检测的准确率和面对复杂环境的鲁棒性。</p><p>如下图，R-CNN 可以分为以下四个步骤。</p><ol><li>使用候选区域方法找出图片中可能存在目标的区域。</li><li>将这些区域缩放成相同尺寸输入卷积神经网络，通过网络提取每个区域的特征。</li><li>将提取到的特征输入分类器并判别每个特征所属类别。</li><li>使用边框回归修正候选框的位置。</li></ol><p><img src="https://wyr-image.oss-cn-beijing.aliyuncs.com/img/659e17510a0ede0aa96e75bc9eafdb26-0.png"></p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 目标检测笔记 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 目标检测 </tag>
+            
+            <tag> 计算机视觉 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>卷积神经网络</title>
+      <link href="/2021/06/27/%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/"/>
+      <url>/2021/06/27/%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/</url>
+      
+        <content type="html"><![CDATA[<h2 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h2><p>在之前的文章中，我们了解到神经网络的输入层中的每个节点都与下一层的每个节点相连接，我们称这种连接方式为全连接（Fully-connected），但是这种全连接方式存在一些明显的缺陷。首先如果使用全连接网络处理图片的话，需要将图像矩阵转换为一列向量，这样就破坏了图像的空间信息。其次假设我们将一张尺寸为 $240\times240\times3$ 的三通道图片作为全连接网络的输入，则在输入层总共需要 172800个权重，如此多的参数需要很大的计算量和时间处理，并且大量的参数还会导致过拟合（模型在训练集上表现好，在测试集上表现差，泛化能力差）。在计算机视觉中广泛应用的卷积神经网络可以用来克服上述问题，在卷积神经网络中我们采取局部连接节点的方式代替全连接的方式，通常一个卷积神经网络由输入层、卷积层，激活层、池化层和全连接层构成。</p><h2 id="卷积和卷积核"><a href="#卷积和卷积核" class="headerlink" title="卷积和卷积核"></a>卷积和卷积核</h2><p>在开始学习卷积神经网络前，我们需要了解卷积和卷积核（Kernel）的相关内容。通常情况下，深度学习中所谓的<strong>卷积</strong>实际上是<strong>互相关</strong>操作（在后面的内容中我将用<strong>卷积</strong>来称呼<strong>互相关</strong>操作），如下图，两个矩阵的卷积即是将两个矩阵中对应位置的元素相乘再求和，则这两个矩阵的卷积结果是 $10\times1 + 56\times2 + 34\times3 + 12\times4 + 94\times5 + 16\times6 + 0\times7 + 100\times8 + 11\times9 &#x3D; 1737$。</p><p><img src="https://wyr-image.oss-cn-beijing.aliyuncs.com/img/2351bae26c14d0661e8d241bde0495cd-0.png"></p><p>现在让我们来了解下图片的卷积是如何操作的，在图片上进行卷积需要用到卷积核（kernel），卷积核实际上就是一个矩阵，我们让这个矩阵在图像上从左向右、从上向下滑动，在滑动的过程中矩阵所覆盖的区域内的像素值与矩阵内元素按位相乘再求和，这些求和结果组成一个新的矩阵我们称之为特征图（Feature map）。</p><p>这个过程类似我们学习过的滑动窗口，假设我们使用一个 $3\times3$ 的卷积核（下图中间的矩阵，矩阵中每个值都为 <code>1/9</code>）对一张 $7\times7$ 尺寸的图片进行卷积，那么首先将卷积核的左上角顶点与图片的左上角顶点重叠，下图左边矩阵上的红色区域为重叠区域，然后按位计算红色矩形区域的元素与卷积核中的元素的乘积再将所有乘积结果求和，就得到了特征图上的第一个值为 <code>67</code>，然后按照从左向右、从上向下的顺序依次移动 1 个像素的距离（每次移动的像素个数称为步长（Stride），也可以移动多个像素）然后再计算重叠部分的卷积直到卷积核到达图片的左下角（下图左边矩阵的左下角虚线框），这样我们就获得了一个 $5\times5$ 的特征图。需要注意的是卷积核的尺寸必须是奇数，例如 $1\times1$、$3\times3$、$5\times5$ 等。</p><p><img src="https://wyr-image.oss-cn-beijing.aliyuncs.com/img/c5807193099dbccd43c4797f766c94f8-0.png"></p><p>使用上述卷积方法得到的特征图尺寸会缩小，同时会丢失图片的边缘信息，因为卷积核移动到图片的边缘就结束了。为了解决这个问题，我们可以使用填充（Padding）方法，填充就是在图片外围填充像素值为 0 的像素点（见下图最左边矩阵），然后通过卷积计算得到的特征图尺寸就和输入图片的尺寸一样了。填充不仅可以在卷积过程中保留图像边缘信息，还可以对不同尺寸的图片进行填充，统一图片尺寸。</p><p><img src="https://wyr-image.oss-cn-beijing.aliyuncs.com/img/b191e726772e2704528b06ecae9afd18-0.png"></p><h2 id="卷积层"><a href="#卷积层" class="headerlink" title="卷积层"></a>卷积层</h2><p>卷积层是卷积神经网络的最重要组成部分，卷积层就是由不同数量和尺寸的卷积核构成的，其作用是用于图像的局部特征提取。在卷积神经网络中我们经常会遇到一个概念称为深度（Depth），深度与图像的通道类似，我们使用一个卷积核对图像进行卷积操作后会得到一个二维特征图，这个特征图和输入图像一样具有高和宽，使用多个尺寸相同的卷积核对输入图像进行卷积时我们将得到多个特征图，将这些特征图堆叠起来将得到一个三维特征图，这三个维度分别对应宽、高和深度，深度值就等于卷积核的个数。</p><p>如下图，我们使用 5 个尺寸相同的卷积核对图像进行卷积，我们将得到 5 个特征图，将这 5 个特征图堆叠起来就是一个具有宽、高和深度的三维矩阵，这个矩阵的深度就是 5。提到深度我们还需要了解一个概念称为滤波器（Filter），滤波器是由多个卷积核堆叠而成，其深度是其内卷积核的数量，当卷积核的个数为 1 时可以认为滤波器等同于卷积核。当给网络输入一张 RGB 图片时，由于图片有三个通道，需要用三个卷积核对图片进行卷积，这三个卷积核就构成一个滤波器。</p><p><img src="https://wyr-image.oss-cn-beijing.aliyuncs.com/img/5b1d3cb88c0e2e66df4185963624d453-0.png"></p><p>在卷积神经网络中我们采取局部连接节点的方式代替全连接的方式，如下图，右边两个圆表示神经元节点，每个节点只与图片上的部分区域的像素值（下图中间的矩阵表示局部像素点）连接，这些区域之外的其他像素值都不会影响与这个区域相连的节点，这些区域称为对应节点的感受野（Receptive field）。如果输入网络的图像尺寸是 $16\times16\times3$（图像的宽、高是 16，通道数是 3），假设感受野的尺寸是 $3\times3$ 那么每个与这个区域连接的节点将接受 $3\times3\times3 &#x3D; 27$ 个权重（图像有三个通道）。假设我们输入的尺寸是 $5\times5\times100$ 以及感受野是 $3\times3$，则与之相连的节点所接受的权重个数是 $3\times3\times100 &#x3D; 900$ 。</p><p><img src="https://wyr-image.oss-cn-beijing.aliyuncs.com/img/606acbaeffb36f7e5ad8cdcf42732388-0.png"></p><h2 id="激活层"><a href="#激活层" class="headerlink" title="激活层"></a>激活层</h2><p>激活层在每一个卷积层后，其作用是引入了非线性因素为节点建立一个输出边界，判断各区域特征强弱来筛选有用特征。例如通过卷积后的一块区域没能达到<strong>激活</strong>阈值，则激活函数将输出 0，表示这块区域提取的特征无关紧要。在卷积神经网络中比较常用的是 ReLU 函数，在本节实验我们并不需要了解 ReLU 函数的公式，因为现有的开源框架中已经内置了一些激活函数，我们只需要调用就行了。</p><h2 id="池化层"><a href="#池化层" class="headerlink" title="池化层"></a>池化层</h2><p>池化（Pooling）最直观的作用就是压缩输入的尺寸（当卷积核的步长大于 1 时也可以压缩输入尺寸），池化层通常放在激活层之后。池化方法有两种，最大池化（Max pooling）和平均池化（Average pooling）。最大池化就是选定域内最大值来表示该区域，下图中我们在 $4\times4$ 的矩阵中选定 $2\times2$ 区域进行池化，选出这个区域内最大值 <code>46</code> 来表示该区域，然后向左移动 2 个步长，在新的区域中选择最大值 <code>105</code> 来表示该区域，依次类推我们将原来的 $4\times4$ 矩阵压缩到 $2\times2$ 尺寸。同理平均池化就是选定区域内的平均值表示该区域。</p><p><img src="https://wyr-image.oss-cn-beijing.aliyuncs.com/img/8ddaa3ef2fee05a40ca3f977ee8f0df9-0.png"></p><h2 id="全连接层"><a href="#全连接层" class="headerlink" title="全连接层"></a>全连接层</h2><p>全连接层就是前一层的激活值与这一层所有的节点相连</p><h2 id="Dropout"><a href="#Dropout" class="headerlink" title="Dropout"></a>Dropout</h2><p>在全连接层后我们通常会进行 Dropout 操作，Dropout 是一种预防过拟合提高模型准确率的方法。其原理是在训练过程中以一定概率随机<strong>丢弃</strong>部分节点从而提高模型的泛化能力</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 目标检测笔记 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 目标检测 </tag>
+            
+            <tag> 计算机视觉 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>非极大值抑制</title>
+      <link href="/2021/06/21/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E4%B8%8E%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/"/>
+      <url>/2021/06/21/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E4%B8%8E%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/</url>
+      
+        <content type="html"><![CDATA[<h2 id="人工神经网络"><a href="#人工神经网络" class="headerlink" title="人工神经网络"></a>人工神经网络</h2><p>传统的算法需要花费大量时间人为的设计特征，在实际应用中面对复杂的背景和目标时往往表现得并不理想。但是随着深度学习的崛起目标检测的性能和表现得到了大幅度的提升，深度学习的发展推动了目标检测的迅猛发展。</p><p>深度学习是人工智能的一个分支，其受人脑的结构和功能的启发，通过人工神经网络（Artificial Neural Network）模仿人脑处理数据和决策的方式从数据中学习内在规律和特征表示。随着近年的计算机性能的发展和海量数据的增长使得深度学习成为机器学习中的热门研究方向。如今深度学习已经广泛应用于我们的日常生活中，如在线翻译、人脸识别、语音转换等。</p><p>人工神经网络（Artificial Neural Network）是一类可以从提供的数据中学习的机器学习算法，是一种模仿人脑神经系统处理信息的运算模型，其由大量的节点或称为神经元相互连接构成。一个节点由输入（Input)、权重（Weight)、偏差（Bias）、激活函数（Activation Function）、输出（Output）组成。下图左边的图片是一个简单的三层神经网络，其中每一个圆形表示一个节点且每一个节点都与下一层中的每个节点相连接。黄色节点所在的层被称为输入层（Input Layer），绿色节点所在的层被称为输出层（Output Layer），在神经网络中除去输入层和输出层的部分被称为隐藏层（Hidden Layer）。</p><p><img src="https://wyr-image.oss-cn-beijing.aliyuncs.com/img/d5722b87fd1c2c716ba4fe8f0636bec6-0.png"></p><p>上图右边的图片是一个节点或称为神经元，$x_1, x_2, x_3 … x_n$ 表神经元的输入（这些 $x$ 可以是像素值、语音、文字等），每一个 $x$ 都有一个与之对应的权重 $w$。这些权重值在训练过程中会被不断地更新，拥有较高权重值的 $x$ 会被认为是比较重要的信息， 反之拥有较低权重值的信息会被认为不太重要。$b$ 表示偏差。我们将 $x$ 和 $w$ 相乘再求和，将求和结果加上偏差后输入一个激活函数得出最后的输出。这就是一个感知器的典型结构。将计算过程用数学方式来表达就是下面的公式。</p><p>$$y &#x3D; f(x_1w_1 + x_2w_2 + x_3w_3 + … + x_nw_n + b) \quad 或 \ y &#x3D; f(\sum_{i&#x3D;1}^nx_iw_i + b)$$</p><h2 id="激活函数（Activation-Function"><a href="#激活函数（Activation-Function" class="headerlink" title="激活函数（Activation Function)"></a>激活函数（Activation Function)</h2><p>激活函数为人工神经网络处理非线性问题提供了重要作用，其引入了非线性因素并且为节点建立一个输出边界，激活函数增加了神经网络的复杂性和网络学习复杂事物的能力。常见的激活函数有 Step、Sigmoid、Tanh、ReLU、Leaky ReLU、ELU，这里我们将向大家介绍 Sigmoid 函数。</p><p>Sigmoid 函数是神经网络中一个常见的激活函数。下面是 sigmoid 公式，其中 $x$ 是上面求和的结果 $y$。</p><p>$$s(x) &#x3D; \frac{1}{1 + e^{-x}}$$</p><p>下图是 Sigmoid 函数图，它的值在 0 到 1 之间。可以看到 $x$ 越小 $y$ 越接近 0，反之 $x$ 越大 $y$ 越接近 1。Sigmoid 函数曾被大量使用，但是由于其会导致梯度反向传递时，梯度爆炸和梯度消失，近年来使用越来越少。</p><p><img src="https://wyr-image.oss-cn-beijing.aliyuncs.com/img/cd79a0291efa3d67f8d10b121acaf560-0.png"></p><h2 id="前馈神经网络（Feed-Forward-Network）"><a href="#前馈神经网络（Feed-Forward-Network）" class="headerlink" title="前馈神经网络（Feed Forward Network）"></a>前馈神经网络（Feed Forward Network）</h2><p>前馈神经网络或前馈网络是深度学习中常见的一种单向网络，每一层的神经元只接收前一层神经元的输出并将自身的输出传递给下一层的神经元。信息从输入层逐层传递最后从输出层输出结果，整个网络没有反馈和中间跳转层。</p><h2 id="反向传播（Back-Propagation）"><a href="#反向传播（Back-Propagation）" class="headerlink" title="反向传播（Back Propagation）"></a>反向传播（Back Propagation）</h2><p>在使用神经网络解决问题时，信息经过神经网络的前向传播最后得出的结果会与期望的结果有偏差，这时我们需要计算实际输出结果和期望结果之间的误差，并将该误差反向地从输出层向输入层传播，以此来更新权重以达到优化神经网络的目的，这个过程就是神经网络训练的过程。</p><p>首先为了实现反向传播，激活函数必须是可微分的，然后我们计算误差 $error$ 对 $w^l_{j,k}$ 的偏导数，$w^l_{j,k}$ 表示从 $(l-1)^{th}$ 层的第 $k$ 个节点到 $l^{th}$ 层的第 $j$ 个节点上的权重。下面是求偏导数的公式，其中 $\partial o_k$ 表示当前层第 $k$ 个节点的输出，$\partial net_k$ 表示当前层第 $k$ 个节点的输入。</p><p>$$\frac {\partial error} {\partial {w^l_{j,k}}} &#x3D; \frac {\partial error} {\partial o_k} \frac {\partial o_k}{\partial net_k} \frac {\partial net_k}{\partial w^l_{j,k}}$$</p><p>至此，我们已经学习了神经网络的基本结构和原理。看了上面的公式大家也许依然无法理解反向传播的计算方法，但是不用担心，在下一节中我们将会使用代码构建一个简单的神经网络，这样能够帮助大家很好的理解神经网络的结构和原理。</p><h2 id="代码实现"><a href="#代码实现" class="headerlink" title="代码实现"></a>代码实现</h2><p>下面简单的构建一个神经网络，首先导入 NumPy 模块。然后我们设定一个学习率 <code>alpha</code> 用于控制网络的学习进度，这里我们设定一个值为 <code>0.1</code>。</p><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line">alpha = <span class="number">0.1</span></span><br></pre></td></tr></table></figure><p>然后我们创建一个 <code>set_w</code> 函数对神经网络进行一些初始化处理。该函数有一个输入值 <code>layers</code>，这个输入值是一个列表，表示网络的结构，例如我们给函数输入一个列表 <code>[3, 2, 1]</code> 表示这个网络的输入层有 3 个节点，隐藏层有两个节点，输出层有 1 个节点。</p><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">set_w</span>(<span class="params">layers</span>):</span><br><span class="line">    W = [np.random.randn(x + <span class="number">1</span>, y + <span class="number">1</span>) / np.sqrt(x)</span><br><span class="line">        <span class="keyword">for</span> x, y <span class="keyword">in</span> <span class="built_in">zip</span>(layers[:-<span class="number">1</span>], layers[<span class="number">1</span>:-<span class="number">1</span>])]</span><br><span class="line">    </span><br><span class="line">    w = np.random.randn(layers[-<span class="number">2</span>] + <span class="number">1</span>, layers[-<span class="number">1</span>])</span><br><span class="line">    W.append(w / np.sqrt(layers[-<span class="number">2</span>]))</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;Network Layers: &#123;&#125;&quot;</span>.<span class="built_in">format</span>(<span class="string">&quot;-&quot;</span>.join(<span class="built_in">str</span>(n) <span class="keyword">for</span> n <span class="keyword">in</span> layers)))</span><br><span class="line">    <span class="keyword">return</span> W</span><br></pre></td></tr></table></figure><p>上面代码第 2、3 行表示我们创建一个 <code>W</code> 列表用于存储从 $(l-1)^{th}$ 层到 $l^{th}$ 层的权重。首先通过 <code>zip(layers[:-1, layers[1:-1])</code> 分别获取 $(l-1)^{th}$ 层和 $l^{th}$ 层（这里不包括最后一层）的节点数 <code>x</code> 和 <code>y</code>，然后使用 <code>np.random.randn</code> 随机初始化一个标准正态分布的矩阵 $(x+1) \times (y+1)$，这里 <code>x + 1</code> 和 <code>y + 1</code> 表示我们在每层添加了一个偏置值，最后除以 <code>x</code> 的开方来标准化每个节点的输出。 例如我们网络结构是 <code>[4, 3, 2, 1]</code>，则第一层到第二层的权重矩阵是 $4 \times 3$，但是我们又在每层添加了一个偏置值，则权重矩阵变为 $5 \times 4$，这样处理的好处是将偏置值和权重一起训练而不用手动调参。</p><p>上面第五行代码类似第 2、3 行代码，表示生成一个 <code>w</code> 矩阵，矩阵的行数是网络倒数第二层的节点数加一个偏置值，列数是最后一层节点数（因为最后一层是输出层，故这里就不用添加偏置值）。</p><p>上面第 6 行代码表示使用倒数第二层的节点数的开方对 <code>w</code> 进行标准化，然后将其添加到 <code>W</code> 中，最后第 8 行输出每层节点数。</p><p>下面我们构建一个 <code>sigmoid</code> 激活函数，该函数需要一个输入值 <code>x</code>。在函数内我们根据前面提到的激活函数公式计算激活值并返回计算结果。</p><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">sigmoid</span>(<span class="params">x</span>):</span><br><span class="line">    <span class="keyword">return</span> <span class="number">1.0</span> / (<span class="number">1</span> + np.exp(-x))</span><br></pre></td></tr></table></figure><p>接下来我们构建一个 <code>sigmoid_deriv</code> 函数，该函数同样需要一个输入值 <code>x</code>。在函数内我们计算 <code>sigmoid</code> 函数的导数并返回计算结果。</p><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">sigmoid_deriv</span>(<span class="params">x</span>):</span><br><span class="line">    <span class="keyword">return</span> x * (<span class="number">1</span> - x)</span><br></pre></td></tr></table></figure><p>下面我们构建一个 <code>feedforward</code> 函数，该函数需要一个输入值 <code>data</code>, 这个 <code>data</code> 表示输入网络的数据集。我们使用这个函数实现前向传播，当训练完神经网络，我们将使用这个函数进行结果预测。在函数内首先使用 <code>np.atleast_2d</code> 确保 <code>data</code> 至少是 2 维数组。因为我们将偏置添加进了权重矩阵，所以在第三行代码中我们使用 <code>np.c_</code> 在数组的每一行的末尾添加一个 <code>1</code>。</p><p>代码的第 5、6 行表示我们用 <code>for</code> 获取 <code>W</code> 中每个权重矩阵，然后分别使用矩阵乘法和 <code>sigmoid</code> 函数对数据进行预测。最后返回预测值。</p><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">feedforward</span>(<span class="params">data</span>):</span><br><span class="line">    p = np.atleast_2d(data)</span><br><span class="line">    p = np.c_[p, np.ones(p.shape[<span class="number">0</span>])]</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span> layer <span class="keyword">in</span> np.arange(<span class="number">0</span>, <span class="built_in">len</span>(W)):</span><br><span class="line">        p = sigmoid(np.dot(p, W[layer]))</span><br><span class="line">        </span><br><span class="line">    <span class="keyword">return</span> p</span><br></pre></td></tr></table></figure><p>下面我们创建一个 <code>loss</code> 函数用于计算实际输出结果和期望结果之间的误差。该函数有两个输入值，<code>data</code> 数据集和数据集中每个数据对应的标签。在函数内我们首先使用 np.atleast_2d 确保 data 至少是 2 维数组，然后使用 <code>feedforward</code> 函数计算数据集的预测结果 <code>predictions</code>。最后我们计算预测结果与真实标签的误差 <code>loss</code>。</p><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">loss</span>(<span class="params">data, y</span>):</span><br><span class="line">    y = np.atleast_2d(y)</span><br><span class="line">    predictions = feedforward(data)</span><br><span class="line">    loss = <span class="number">0.5</span> * np.<span class="built_in">sum</span>((predictions - y) ** <span class="number">2</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> loss</span><br></pre></td></tr></table></figure><p>接下来我们将创建一个 <code>backprop</code> 函数， 这个函数将用于计算反向传播。该函数需要两个输入值 <code>x</code> 和 <code>y</code> 分别表示数据集中的每个数据和其对应的标签。下面的第 2 至 7 行代码与 <code>feedforward</code> 函数类似这里就不多赘述了，第 8 行代码先将网络的每层矩阵相乘结果作为 <code>sigmoid</code> 函数的输入，然后将函数计算结果添加到列表 <code>A</code> 中。</p><p>第 10 行代码开始就是反向传播的过程，首先计算网络的输出值与标签值的差，这一步其实是<code>loss</code> 函数的导数。第 11 行代码我们创建一个列表 <code>D</code> 用于存储梯度变化的量,根据链式法则计算 <code>error</code> 与 <code>sigmoid</code> 函数的导数的乘积。列表中的值将用于更新权重矩阵。</p><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">backprop</span>(<span class="params">x, y</span>):</span><br><span class="line">    a = np.atleast_2d(x)</span><br><span class="line">    A = [np.c_[a, np.ones((a.shape[<span class="number">0</span>]))]]</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> layer <span class="keyword">in</span> np.arange(<span class="number">0</span>, <span class="built_in">len</span>(W)):</span><br><span class="line">        </span><br><span class="line">        out = sigmoid(A[layer].dot(W[layer]))</span><br><span class="line">        A.append(out) </span><br><span class="line"></span><br><span class="line">    error = A[-<span class="number">1</span>] - y</span><br><span class="line">    D = [error * sigmoid_deriv(A[-<span class="number">1</span>])]</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> layer <span class="keyword">in</span> np.arange(<span class="built_in">len</span>(A) - <span class="number">2</span>, <span class="number">0</span>, -<span class="number">1</span>):</span><br><span class="line">        delta = D[-<span class="number">1</span>].dot(W[layer].T)</span><br><span class="line">        delta = delta * sigmoid_deriv(A[layer])</span><br><span class="line">        D.append(delta)</span><br><span class="line"> </span><br><span class="line">    D = D[::-<span class="number">1</span>]</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> layer <span class="keyword">in</span> np.arange(<span class="number">0</span>, <span class="built_in">len</span>(W)):</span><br><span class="line">        W[layer] += -alpha * A[layer].T.dot(D[layer])</span><br></pre></td></tr></table></figure><p>第 13 到 16 行计算每层的梯度变化量，我们使用 <code>for</code> 循环反向遍历网络的每一层（不包括最后一层，因为最后一层网络的梯度变化我们已经在第 11 行计算了）。第 14、15 行计算当前层的梯度变化 <code>delta</code>, <code>delta</code> 就等于前一层的梯度变化 <code>D[-1]</code> 与当前层的权重的转置矩阵相乘，然后再与当前层的 <code>sigmoid</code> 函数的导数相乘。第 16 行将计算后得到的 <code>delta</code> 添加到列表 <code>D</code> 中。</p><p>上面第 18 到 21 行将更新权重矩阵。第 18 行将颠倒 <code>D</code> 中 <code>delta</code> 的顺序，因为 <code>delta</code> 是通过反向传播从输出层向输入层计算的，所以在更新权重矩阵时要将其顺序颠倒。第 20、21 行使用 <code>for</code> 循环遍历网络的每一层，在每一层我们将当前层的激活函数的转置矩阵和 <code>D</code> 中的 <code>delta</code> 相乘，再乘以负的学习率 <code>alpha</code>，最后我将计算得到的值与当前层的权重相加即可完成权重的更新。</p><p>下面是创建一个 <code>train</code> 函数用于训练网络。该函数需要 3 个输入值，<code>data</code> 表示输入的数据集，<code>y</code> 是每个数据的标签，<code>epochs</code> 表示训练的次数，这里我们设置一个默认值 <code>500</code>。</p><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">train</span>(<span class="params">data, y, epochs = <span class="number">500</span></span>):</span><br><span class="line">    <span class="keyword">for</span> epoch <span class="keyword">in</span> np.arange(<span class="number">0</span>, epochs):</span><br><span class="line">        <span class="keyword">for</span> (x, label) <span class="keyword">in</span> <span class="built_in">zip</span>(data, y):</span><br><span class="line">            backprop(x, label)</span><br><span class="line"></span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;epoch: &#123;&#125;, loss: &#123;&#125;&quot;</span>.<span class="built_in">format</span>(epoch + <span class="number">1</span>, loss(data, y)))</span><br></pre></td></tr></table></figure><p>在函数内首先使用一个 <code>for</code> 循环用于执行 <code>epochs</code> 次训练。接下来使用一个 <code>for</code> 循环获取 <code>data</code> 和 <code>y</code> 中的每个数据 <code>x</code> 和其对应的标签 <code>label</code>，在循环内我们执行 <code>backprop</code> 函数,将获取的数据和标签作为函数的输入值。最后输出每次训练后的误差。至此神经网络已经构建完成了。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 目标检测笔记 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 目标检测 </tag>
+            
+            <tag> 计算机视觉 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>非极大值抑制</title>
+      <link href="/2021/06/15/%E9%9D%9E%E6%9E%81%E5%A4%A7%E5%80%BC%E6%8A%91%E5%88%B6/"/>
+      <url>/2021/06/15/%E9%9D%9E%E6%9E%81%E5%A4%A7%E5%80%BC%E6%8A%91%E5%88%B6/</url>
+      
+        <content type="html"><![CDATA[<h2 id="非极大值抑制的作用"><a href="#非极大值抑制的作用" class="headerlink" title="非极大值抑制的作用"></a>非极大值抑制的作用</h2><p>在进行目标检测过程中，我们的分类器会对每一个滑动窗口的内容进行分类，而滑动窗口是按照设定的步长在图像金字塔的每个图层中从上到下、从左向右移动，这样一个目标就会出现在多个滑动窗口中，最后我们就会获得多个相交、重叠的矩形框。如下图在目标检测过程中目标上会产生多个矩形框，我们希望从这些矩形框中挑选出一个最合适的矩形框且剔除多余的矩形框，使得每个目标只被一个矩形框标记。</p><p><img src="https://wyr-image.oss-cn-beijing.aliyuncs.com/img/00711d7ab1cfaaa06fc56238d037923a-0.png"></p><p>非极大值抑制（Non Maximum Suppression）以下简称 NMS，的主要作用是去除目标检测过程中产生的冗余矩形框。要实现 NMS 首先需要计算矩形框之间的交并比（Intersection over Union），以下简称 IoU。下图以直观的例子展示计算 IoU 的方法，左图中的目标（人）同时被两个矩形框标记，为了剔除多余的矩形框需要计算两个矩形框的 IoU。IoU 的计算的方法如下图中间的公式所示，即两个框的交集（红色区域）与两个框的并集（绿色区域）的比值。如果计算后的 IoU 大于事先设定的阈值，则剔除较小的矩形框（下图中最右边图片所示），通过这个过程我们就达到了剔除冗余的矩形框的目的。接下来我们将通过代码来实现一个 NMS 函数。</p><p><img src="https://wyr-image.oss-cn-beijing.aliyuncs.com/img/1c0188c61434b8326f0860506ca88d60-0.png"></p><h2 id="代码实现"><a href="#代码实现" class="headerlink" title="代码实现"></a>代码实现</h2><p>然后我们定义一个名为 <code>NMS</code> 的函数（见下面代码）。该函数有两个参数，第一个参数 <code>boxes</code> 表示目标检测过程中获得的所有矩形框。第二个参数 <code>threshold</code> 表示事先定义的一个阈值，当两个矩形框重叠的面积超过这个阈值时我们将剔除其中一个矩形框</p><figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">def <span class="title function_">NMS</span>(boxes, threshold):</span><br><span class="line">    <span class="keyword">if</span> <span class="title function_">len</span>(boxes) == <span class="number">0</span>:</span><br><span class="line">        <span class="keyword">return</span> []</span><br><span class="line">    </span><br><span class="line">    boxes = np.<span class="title function_">array</span>(boxes).<span class="title function_">astype</span>(<span class="string">&quot;float&quot;</span>)</span><br><span class="line"></span><br><span class="line">    x1 = boxes[:,<span class="number">0</span>]</span><br><span class="line">    y1 = boxes[:,<span class="number">1</span>]</span><br><span class="line">    w1 = boxes[:,<span class="number">2</span>]</span><br><span class="line">    h1 = boxes[:,<span class="number">3</span>]</span><br><span class="line">    x2 = x1 + w1</span><br><span class="line">    y2 = y1 + h1</span><br><span class="line">    </span><br><span class="line">    area = (w1 + <span class="number">1</span>) * (h1 + <span class="number">1</span>)</span><br><span class="line">    temp = []</span><br><span class="line">    </span><br><span class="line">    idxs = np.<span class="title function_">argsort</span>(h1)</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">while</span> <span class="title function_">len</span>(idxs) &gt; <span class="number">0</span>:</span><br><span class="line">        last = <span class="title function_">len</span>(idxs) - <span class="number">1</span></span><br><span class="line">        i = idxs[last]</span><br><span class="line">        temp.<span class="title function_">append</span>(i)   </span><br><span class="line">        </span><br><span class="line">        x1_m = np.<span class="title function_">maximum</span>(x1[i], x1[idxs[:last]])</span><br><span class="line">        y1_m = np.<span class="title function_">maximum</span>(y1[i], y1[idxs[:last]])</span><br><span class="line">        </span><br><span class="line">        x2_m = np.<span class="title function_">minimum</span>(x2[i], x2[idxs[:last]])</span><br><span class="line">        y2_m = np.<span class="title function_">minimum</span>(y2[i], y2[idxs[:last]])</span><br><span class="line">        </span><br><span class="line">        w = np.<span class="title function_">maximum</span>(<span class="number">0</span>, x2_m - x1_m + <span class="number">1</span>)</span><br><span class="line">        h = np.<span class="title function_">maximum</span>(<span class="number">0</span>, y2_m - y1_m + <span class="number">1</span>)</span><br><span class="line">        </span><br><span class="line">        over = (w * h) / area[idxs[:last]]</span><br><span class="line">        </span><br><span class="line">        idxs = np.<span class="title function_">delete</span>(idxs, np.<span class="title function_">concatenate</span>(([last],  </span><br><span class="line">            np.<span class="title function_">where</span>(over &gt; threshold)[<span class="number">0</span>])))  </span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> boxes[temp].<span class="title function_">astype</span>(<span class="string">&quot;int&quot;</span>)</span><br></pre></td></tr></table></figure><p>在目标检测过程中我们的算法有可能没有检测到任何目标，那么这就表示在图片中没有用于标记目标的矩形框。所以下面的代码第 2 行我们将用一个 <code>if</code> 语句来判断输入的 <code>boxes</code> 的数量是否为 <code>0</code>，如果矩形框的数量为 <code>0</code> 则函数返回一个空列表。然后我们还需要将 <code>boxes</code> 转换为 NumPy 数组并且将其中每个元素转换为 <code>float</code> 浮点类型（见代码第 5 行），因为后面我们需要用这些元素进行算术运算。</p><p>代码第 7 到 10 行，我们使用切片方法获取每一个 <code>boxes</code> 内的元素并将其分别保存在 <code>x1</code>、<code>y1</code>、<code>w1</code>、<code>h1</code> 这四个数组中。这四个数组中分别保存了每一个 <code>boxes</code> 中的第一至四元素。<code>x1</code> 表示矩形框左上角顶点的横坐标，<code>y1</code> 表示矩形框左上角顶点的纵坐标，<code>w1</code> 是矩形框的宽，<code>h1</code> 是矩形框的高。 代码第 11、12 行我们使用这四个数组计算得出每个矩形框的右下角顶点横坐标的集合 <code>x2</code> 和 纵坐标的集合 <code>y2</code>。</p><p>代码第 14 行表示我们需要计算每个矩形框的面积。这里分别将 <code>w1</code> 和 <code>h1</code> 加 <code>1</code> 是为了避免使用 <code>area</code> 计算 IoU 时分母为零的情况发生。我们还初始化了代码 15 行中的 <code>temp</code> 列表用于临时存储值。</p><p>代码 17 行我们使用 NumPy 的 <code>argsort</code> 方法将 <code>h1</code> 中的元素从小到大排序并返回每个元素在 <code>h1</code> 中的下标，需要注意的是 <code>idxs</code> 中的元素是 <code>h1</code> 中元素的下标，这些下标排列的顺序是按照其对应 <code>h1</code> 中元素的大小排列的。</p><p>接下来我们使用 <code>while</code> 循环遍历 <code>idxs</code>，当 <code>idxs</code> 中没有元素时终止循环。代码 20 到 22 行我们获取 <code>idxs</code> 中最后一个元素并将其添加到 <code>temp</code> 中。</p><p>代码 24 行我们使用 <code>np.maximum</code> 方法将 <code>x1[i]</code> 与 <code>boxes</code> 中其他矩形框的左上角横坐标两两比较， 将较大的值保存在数组 <code>x1_m</code> 中。同样代码 25 行将 <code>y1[i]</code> 与 <code>boxes</code> 中其他矩形框的左上角纵坐标两两比较，将较大的值保存在数组 <code>y1_m</code> 中。两个矩形框重叠的部分是矩形，所以这一步的目的是为了找到这个重叠矩形的左上角顶点。同理，27、28 两行代码的目的是为了找出这个重叠矩形的右下角顶点。我们使用 <code>np.minimum</code> 将 <code>x2[i]</code> 与 <code>boxes</code> 中其他矩形框的右下角横坐标两两比较， 将较小的值保存在数组 <code>x2_m</code> 中。同样的再将 <code>y2[i]</code> 与 <code>boxes</code> 中其他矩形框的右下角纵坐标两两比较，将较小的值保存在数组 <code>y2_m</code> 中。</p><p>有了重叠矩形的两个顶点坐标，我们就可以计算矩形的宽和高，进而可以计算矩形的面积。第 30，31 行代码是分别计算矩形的宽和高，我们使用 <code>np.maximum</code> 方法来剔除掉没有相交的矩形。如果两个矩形框相交，则 <code>x2_m - x1_m + 1</code> 和 <code>y2_m - y1_m + 1</code> 大于零，如果两个矩形框不相交则这两个值小于零。</p><p>33 行代码表示计算重叠矩形面积和 <code>area</code> 中的面积的比值 <code>over</code>，这一步和计算 IoU 是等效的。35 行代码的目的是为了剔除重叠的矩形框。我们使用 <code>np.where</code> 判断 <code>over</code> 中的元素是否大于设定的阈值 <code>threshold</code>，如果大于这个阈值则返回这个元素的下标。接着使用 <code>np.concatenate</code> 方法将 <code>idxs</code> 中最后的元素和返回的下标拼接在一起。最后通过 <code>np.delete</code> 方法从 <code>idxs</code> 中删除这些下标对应的元素。</p><p>通过上一步我们删除了与 <code>idxs</code> 中 <code>last</code> 对应的矩形框相互重叠且面积大于阈值的矩形框（同时也从 <code>idxs</code> 中删除最后一个元素），然后进入下一个循环直到 <code>idxs</code> 中的元素个数为 0，最后我们通过下面一行代码返回挑选后的矩形框，同时我们需要使用 <code>astype</code> 方法将 <code>boxes</code> 中的浮点类型转换为整数类型。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 目标检测笔记 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 目标检测 </tag>
+            
+            <tag> 计算机视觉 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>图像分类的基本知识</title>
+      <link href="/2021/06/12/%E5%9B%BE%E5%83%8F%E5%88%86%E7%B1%BB%E5%9F%BA%E6%9C%AC%E7%9F%A5%E8%AF%86/"/>
+      <url>/2021/06/12/%E5%9B%BE%E5%83%8F%E5%88%86%E7%B1%BB%E5%9F%BA%E6%9C%AC%E7%9F%A5%E8%AF%86/</url>
+      
+        <content type="html"><![CDATA[<h2 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h2><p>之前已经学会了如何使用图像金字塔和滑动窗口在图片中<strong>寻找</strong>目标，以及通过方向梯度直方图的方法对图像进行特征描述，但是光靠这些方法还不足以实现一个目标检测项目。对一张图片进行目标检测还需要判断滑动窗口<strong>寻找</strong>的物体是否是想要检测到，这就涉及到图像分类问题。</p><p>计算机视觉中的图像分类，简单来说就是为一张图片赋予一个标签（Label），一个标签就是人为定义的集合中的一个元素，例如下面公式表示我们定义了一个集合 $D$，$cat$ 、$dog$ 则被称为集合 $D$ 的 2 个不同标签。</p><p>$$ D &#x3D; {cat,\ dog} $$</p><p>以下图为例，图像分类任务就是希望给计算机提供左边的图片，则计算机将赋予其 $cat$ 标签，提供右边的图片，则赋予其 $dog$ 标签。在计算机视觉中我们希望构建一个系统，当给系统输入一张图片时，系统会分析该图片然后输出一系列标签的概率值（例如 $cat &#x3D; 0.89$，$dog &#x3D; 0.1$），而这些标签属于我们事先定义的一个类别集合（例如 $cat$ 和 $dog$ 属于集合 $D$）。更具体的来说假设我们有一张宽和高分别为 $W,\ H$ 的 3 通道的彩色图片，则图片共有 $W\times H\times 3$ 个像素，我们希望将所有这些像素值输入一个机器学习或深度学习模型，然后该模型通过计算将图片正确的分到所属类别。</p><p><img src="https://wyr-image.oss-cn-beijing.aliyuncs.com/img/94331cf84c04f02bc541dab480644a47-0.png"></p><p>要想通过机器学习或深度学习实现图像分类，我们还需要为其提供数据集。数据集是由许多数据组成的集合，数据集中的任意一个元素可以是图片、文本、音频等。我们希望机器学习或深度学习算法通过学习和提炼数据集中的规律，并运用这些规律正确地分类它从未 $\lceil 看 \rfloor$ 到过的图片。故机器学习和深度学习是数据驱动的方法，而数据集则是不可或缺的前提。 其中学习和提炼的过程我们称之为训练（Train）也可称为建模的过程，最后习得数据集中的规律表示我们已经完成了建模并获得一个模型（Model）。</p><p>下面更进一步介绍如何构建一个图像分类模型。构建一个分类模型基本上可以分为下面几个步骤</p><h2 id="收集数据"><a href="#收集数据" class="headerlink" title="收集数据"></a>收集数据</h2><p>为了构建一个图像分类模型，我们首先需要收集不同的图片创建一个数据集，对于数据集中的每张图片我们都有一个对应的标签，这些标签都属于一个预先定义好的集合（例如前面提到的 $cat$ 和 $dog$ 属于集合 $D$）。还有一点需要注意的是我们在创建数据集时要尽量让每种类别的图片数量相差不太大，例如假设我们构建一个只有猫和狗的数据集，那么猫这个类别（或称为标签）的图片数量尽量不要与狗这个类别（或称为标签）的图片数量相差太大。如果数量相差太大（例如猫的图片数量是狗的图片数量的三倍，这种情况通常称为样本不均衡）则会导致模型的性能较差。</p><h2 id="数据集划分"><a href="#数据集划分" class="headerlink" title="数据集划分"></a>数据集划分</h2><p>收集好数据集后通常我们会将其分为三份：训练集、验证集、测试集。训练集就是用于让机器学习或深度学习算法（也可称为分类器）从中学习每个类别的特征规律，我们将数据输入分类器，然后分类器通过计算输出分类结果，如果输出结果与输入数据所对应标签不一致则分类错误，分类器将进行自我修正，最后完成训练生成一个模型。</p><p>训练完成后我们用测试集评估模型性能，注意测试集和训练集必须是数据集中的两个没有交集的子集，因为如果用于评估模型的测试集中掺杂了训练集中的样本评估的结果就不够准确。通常数据集会被按比例分为：训练集占 75%，测试集占 25%。数据集的比例划分没有明确规定，可以是 60% 和 40%、90% 和 10% 等。如果数据集中的样本数量有 100 万个，则将 25% 的样本划分为用于评估模型的测试集显然是不合理的。</p><p>验证集主要用于评估模型效果以及调整超参数。在机器学习和深度学习中会有一些需要设置的参数，这些参数不是通过训练过程得到的而是需要事先设定，通常我们需要对这些参数调优以便提高模型的性能和效果，这些参数被称为超参数。验证集不是必需的，如果不需要调参可以不划分验证集，通常会从训练集中抽取 10% 到 20% 作为验证集。</p><h2 id="训练"><a href="#训练" class="headerlink" title="训练"></a>训练</h2><p>有了数据集并且划分了训练集和测试集，我们就可以训练自己的模型了。首先我们需要一个评分函数（Score Function）将输入图片映射到类别标签。例如，假设我们有一个评分函数 $f(x;w)$，我们将训练集中的图片作为函数的输入，函数通过计算输出预测的类别标签。然后一个损失函数（Loss Function）将会被用于评估输出的结果与该数据所对应的真实标签的近似程度，两个标签的相似程度越高，损失函数的值就越小。我们希望通过整个训练过程最小化损失函数以提高分类的准确度。</p><h2 id="评估"><a href="#评估" class="headerlink" title="评估"></a>评估</h2><p>完成训练后我们用测试集评估获得的模型，简单来说就是我们会将测试集中的每张图片输入模型，看看模型对每张图片分类后的标签是否正确。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 目标检测笔记 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 目标检测 </tag>
+            
+            <tag> 计算机视觉 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>方向梯度直方图</title>
+      <link href="/2021/06/11/%E6%96%B9%E5%90%91%E6%A2%AF%E5%BA%A6%E7%9B%B4%E6%96%B9%E5%9B%BE/"/>
+      <url>/2021/06/11/%E6%96%B9%E5%90%91%E6%A2%AF%E5%BA%A6%E7%9B%B4%E6%96%B9%E5%9B%BE/</url>
+      
+        <content type="html"><![CDATA[<h2 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h2><p>传统的目标检测流程可分为三个步骤，第一步是使用滑动窗口和图像金字塔从图片中选择一些区域。第二步是将选择出来的区域转化为人工设计的特征，可称为特征提取。第三步是将这些特征输入分类器进行分类。方向梯度直方图（Histogram of Oriented Gradients）以下简称 HOG，就是一种人工设计的特征，用来简化图像表述的特征描述符。</p><p>下图中左边的图片是一只猫，我们不仅可以看出猫身体上的特征、颜色、纹理，而且还能看到背景。右边的图片是使用 HOG 来表示的图片，除了可以看到图中能看出猫的外形，其他的细节包括背景几乎都被去除了，故右边的图片是左边图片的一种简化表示形式。HOG 可以用来表示物体的形状、外形特征，将这些特征输入分类器就可以实现目标的分类。</p><p><img src="https://wyr-image.oss-cn-beijing.aliyuncs.com/img/5fabda3172832e4915fe898b7bf3f88c-0.png"></p><h2 id="方向梯度直方图流程"><a href="#方向梯度直方图流程" class="headerlink" title="方向梯度直方图流程"></a>方向梯度直方图流程</h2><h3 id="预先归一化（Normalization）"><a href="#预先归一化（Normalization）" class="headerlink" title="预先归一化（Normalization）"></a>预先归一化（Normalization）</h3><p>在计算梯度前可对图片归一化（Normalization）处理，归一化的目的是使所有的数值落入到统一的范围内，从而使算法能有更好的表现。</p><h3 id="计算梯度"><a href="#计算梯度" class="headerlink" title="计算梯度"></a>计算梯度</h3><p>前面提到可以不用预先对图片进行归一化，故可以说 HOG 特征是从计算图像在水平方向和垂直方向上的梯度开始的。图像的梯度计算是使用卷积核对图像进行卷积操作，例如我们可以使用矩阵 <code>[[-1, 0, 1]]</code> 和 <code>[[-1], [0], [1]]</code> 分别与图像上的每个像素进行运算来获得水平和垂直方向上的梯度。<br>$$<br>G_x &#x3D; I \times W_x<br>$$</p><p>$$<br>G_y &#x3D; I \times W_y<br>$$</p><p>上面两个公式分别计算水平、垂直方向上的梯度 $ G_x $、$\ G_y $。其中 $I$ 是输入图片，$W_x$ 表示水平方向的卷积核，$W_y$ 表示垂直方向的卷积核。下面两张图片给我们展示了经过梯度计算后的图片是什么样子，左图表示计算图片的水平梯度，右图表示计算图片的垂直梯度。相较于原始图片，下面的两张图片中的信息减少了很多，整个 HOG 的过程就是逐步减少图片中的<strong>无用</strong>信息，只展示给我们感兴趣的特征。</p><p><img src="https://wyr-image.oss-cn-beijing.aliyuncs.com/img/536c2f2dd3dfa07d2ccadd87889e408a-0.png"></p><p>现在已经有了水平方向的梯度 $G_x$ 和垂直方向的梯度 $G_y$，接下来我们要计算梯度的幅值和方向。计算梯度幅值和方向是为了进一步计算方向梯度直方图。</p><p>$$ G &#x3D; \sqrt {G_x^2 + G_y^2} $$</p><p>$$ \theta &#x3D; \arctan \frac{G_y}{G_x} $$</p><p>上面的两个公式分别计算每个像素的梯度幅值 $G$ 和梯度方向 $\theta$。下面左图是合并水平、垂直方向上的梯度获得的梯度幅值，可以看到相较于水平、垂直方向上的图片，左图中猫的轮廓更清晰明显。右图表示图片中的梯度方向。</p><p><img src="https://wyr-image.oss-cn-beijing.aliyuncs.com/img/89354d055037be42b5086de30837abd6-0.png"></p><h3 id="方向梯度直方图"><a href="#方向梯度直方图" class="headerlink" title="方向梯度直方图"></a>方向梯度直方图</h3><p>现在我们已经有了梯度幅值 $G$ 和梯度方向 $\theta$，接下来我们就可以计算方向梯度直方图了。在计算方向梯度直方图之前，我们需要将图片分成若干个小方格（Cells），为避免歧义下文皆书写为 Cell 或 Cells 。例如，下图是一张宽高为 $649\times 385$ 的图片，我们将其平均分割成若干个 Cells，每个 Cell 内包含 $8\times 8$ 个像素，所以图片的高被分为 $\lfloor 385\div8 \rfloor &#x3D; 48$ 份，图片的宽被分为 $\lfloor 649\div8 \rfloor &#x3D; 81$ 份（$\lfloor\quad\rfloor$ 表示向下取整），故整张图片有 $48\times 81$ 个 Cells。</p><p><img src="https://wyr-image.oss-cn-beijing.aliyuncs.com/img/213aecaf882917765493608c07050ec9-0.png"></p><p>至此我们已经将图片分成许多 Cells，对于每一个 Cell，使用 $G$ 和 $\theta$ 来构建方向梯度直方图。首先我们先选择梯度方向的范围，梯度方向的范围可分为 0 到 180 度（无符号）和 0 到 360 度（有符号），通常使用 0 到 180 度的范围。然后将 0 到 180 度的范围分成 9 个区间（bins)，分别为 0 到 20 度，20 到 40 度， 40 到 60 度 …… 160 到 180 度。每个像素都有一个梯度幅值和一个梯度方向，所以方向梯度直方图的计算就是每个像素所对应的梯度方向落在 9 个区间中的哪一个，那么该像素的梯度幅值就在该区间中累加。</p><p>下图是一个计算方向梯度图的例子，对于红色方框中的像素，假设其中有些像素对应的梯度方向落在 0 到 20 区间，那么将这些像素对应的梯度幅值在 0 到 20 区间内进行累加，同理其他区间也做同样的运算，最终得到下图中右边的方向梯度直方图。同样地，整张图片中的所有 Cells 都用同样的方法计算方向梯度直方图。</p><p><img src="https://wyr-image.oss-cn-beijing.aliyuncs.com/img/156af366316a934921638c21804d8eb0-0.png"></p><h3 id="区域（Blocks）归一化"><a href="#区域（Blocks）归一化" class="headerlink" title="区域（Blocks）归一化"></a>区域（Blocks）归一化</h3><p>我们已经将图像分成若干个 Cells，并且计算了每个 Cell 的方向梯度直方图。接下来我们要对图像进行区域归一化处理，归一化的目的是减少光照变化对图像梯度的影响。 现在让我们来看看如何进行归一化处理。</p><p>首先我们先来介绍什么是区域（Blocks），为避免歧义下文皆书写为 Block 或 Blocks，前面我们将图像分成若干个 Cells，每个 Cell 内有若干个像素，类似地，一个 Block 是一块由若干个 Cells 组成的矩形。对图像进行归一化的过程类似于前面实验学习的滑动窗口，将一个 Block 从左向右、从上向下在图中滑动，然后在每个 Block 区域内进行归一化计算。</p><p>让我们通过下图来理解如何通过 Blocks 对图片进行归一化。 下图中右边图片是我们从原图片中选取的一部分，在这块区域里面有若干个 Cells，我们用红色矩形框表示一个 Blcok，红色矩形框在图上向右滑动一个 Cell 的步长后我们就得到了蓝色矩形框，所以区域归一化的方法就是设定一个尺寸为 $K\times K$ 个 Cells 的 Block，在图上从左向右、从上向下滑动，然后在每个 Block 内进行归一化。</p><p><img src="https://wyr-image.oss-cn-beijing.aliyuncs.com/img/cb9ff95f8bc91f1d442b26fd71cf98fb-0.png"></p><p>在每个 Block 内有 $2\times 2$ 个 Cells，前面我们将梯度方向分为 9 个区间并为每个 Cell 计算了方向梯度直方图，故每个 Cell 有 9 个向量，则在一个 Block 内共有 $2\times 2\times 9$ 个向量。然后我们可以使用 $L1$ 范数或 $L2$ 范数对 Block 内的向量进行归一化。其中使用 $L2$ 范数进行归一化的效果相对较好，下面就是使用 $L2$ 范数归一化的公式，即 Block 内的每个向量除以由 Block 内所有向量计算得到的 $L2$ 范数。其中 $v_i$ 表示 Block 内的向量，$\epsilon$ 的作用是防止出现分母为 0 的情况，它是一个很小的值。</p><p>$$ v &#x3D; \frac{v_i}{\sqrt{\sum_{i&#x3D;1}^n{v_i^2} + \epsilon^2}} $$</p><p>从上图中可以看出每一个 Cell 不止出现在一个 Block 内，也就是说一个 Cell 将被重复的用于归一化计算中，这样做会看似比较冗余，但是会提高特征描述的表现。最后对所有的 Block 完成归一化计算，合并所有获得的归一化后的向量，这样我们就完成了图像的 HOG 特征化表示。</p><h2 id="使用-Scikit-image-实现方向梯度直方图"><a href="#使用-Scikit-image-实现方向梯度直方图" class="headerlink" title="使用 Scikit-image 实现方向梯度直方图"></a>使用 Scikit-image 实现方向梯度直方图</h2><p>以上所述的概念或公式也许没法在短时间内理解消化，不过也不用太过担心，因为 HOG 已经在现有的一些算法库中实现，所以我们完全不用花时间再去复现它。</p><p>可以使用 <code>feature.hog</code> 用于计算图片的方向梯度直方图。该函数的参数意义如下所示。</p><ul><li>第一个参数 <code>image</code> 表示输入图像。</li><li><code>orientations</code> 表示要将梯度方向分成几个区间，这里我们将梯度方向分为 9 个区间。</li><li><code>pixels_per_cell</code> 表示 Cell 的尺寸，即一个 Cell 中有几个像素，需要传递一个元组给该参数，我们将 <code>(8, 8)</code> 传递给该参数。</li><li><code>cells_per_block</code> 表示每个 Block 的尺寸，即一个 Block 中有几个 Cells，这里需要传递一个元组给该参数，我们将 <code>(2, 2)</code> 传递给该参数。</li><li><code>transform_sqrt</code> 表示伽马校正，我们将 <code>True</code> 传递给该参数表示使用伽马校正预先对图片进行归一化处理。</li><li><code>visualize</code> 表示可视化，将 <code>True</code> 传递给该参数表示返回 HOG 图像。</li></ul><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">from skimage import feature</span><br><span class="line">from skimage import exposure</span><br><span class="line">from matplotlib import pyplot as plt</span><br><span class="line">import cv2</span><br><span class="line"></span><br><span class="line">%matplotlib inline</span><br><span class="line">(o, hog) = feature.hog(image, orientations=9, pixels_per_cell=(8, 8),</span><br><span class="line">    cells_per_block=(2, 2), transform_sqrt=True, visualize=True)</span><br></pre></td></tr></table></figure>]]></content>
+      
+      
+      <categories>
+          
+          <category> 目标检测笔记 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 目标检测 </tag>
+            
+            <tag> 计算机视觉 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>图像金字塔</title>
+      <link href="/2021/06/08/%E5%9B%BE%E5%83%8F%E9%87%91%E5%AD%97%E5%A1%94/"/>
+      <url>/2021/06/08/%E5%9B%BE%E5%83%8F%E9%87%91%E5%AD%97%E5%A1%94/</url>
+      
+        <content type="html"><![CDATA[<h2 id="图像金字塔的作用"><a href="#图像金字塔的作用" class="headerlink" title="图像金字塔的作用"></a>图像金字塔的作用</h2><p>图像金字塔简单来说就是用多个不同的尺寸来表示一张图片。如下图，最左边的图片是原始图片，然后从左向右图片的尺寸依次缩小直到图片的尺寸达到一个阈值，这个阈值就是多次缩小图片的最小尺寸，不会有比这更小尺寸的图片了，像这种图片的尺寸逐步递增或递减的多张图层就是图像金字塔，每张不同尺寸的图片都称为图像金字塔的一层。图像金字塔的目的就是寻找图片中出现的不同尺寸的目标（物体、动物等）。</p><p><img src="https://wyr-image.oss-cn-beijing.aliyuncs.com/img/ce932583dabaf1d754a4933676153d7c-0.png"></p><h2 id="代码实现"><a href="#代码实现" class="headerlink" title="代码实现"></a>代码实现</h2><p>创建了、一个名为 <code>pyramid</code> 函数，这个函数将用来生成图像金字塔，这个函数有三个参数，如下所示。</p><ul><li>第一个参数 <code>image</code> 是要进行图像金字塔操作的原始图片。</li><li>第二个参数 <code>top</code> 是图像将会被缩小的最小尺寸，我们将这个参数设置一个默认值为 <code>(128, 128)</code>，第一个 <code>128</code> 表示图片的高，第二个 <code>128</code> 表示图片的宽。</li><li>第三个参数 <code>ratio</code> 表示每次图像将会被缩小 <code>ratio</code> 倍，我们给这个参数设置了一个默认值为 <code>1.2</code>。</li></ul><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> cv2</span><br><span class="line"><span class="keyword">from</span> matplotlib <span class="keyword">import</span> pyplot <span class="keyword">as</span> plt</span><br><span class="line"><span class="keyword">from</span> IPython <span class="keyword">import</span> display</span><br><span class="line">%matplotlib inline</span><br><span class="line"><span class="keyword">def</span> <span class="title function_">pyramid</span>(<span class="params">image, top = (<span class="params"><span class="number">128</span>, <span class="number">128</span></span>), ratio = <span class="number">1.2</span></span>):</span><br><span class="line">    <span class="keyword">yield</span> image</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">        (w, h) = (<span class="built_in">int</span>(image.shape[<span class="number">1</span>] / ratio), <span class="built_in">int</span>(image.shape[<span class="number">0</span>] / ratio))</span><br><span class="line">        image = cv2.resize(image, (w, h), interpolation = cv2.INTER_AREA)</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">if</span> w &lt; top[<span class="number">1</span>] <span class="keyword">or</span> h &lt; top[<span class="number">0</span>]:</span><br><span class="line">            <span class="keyword">break</span></span><br><span class="line">        </span><br><span class="line">        <span class="keyword">yield</span> image</span><br></pre></td></tr></table></figure><p>在函数内我们首先使用 <code>yield</code> 生成器返回原始图片，因为在图像金字塔的最底端我们需要一张原始图片。然后使用 <code>while</code> 循环来不断缩小图片尺寸。直到缩小后图片的尺寸比前面的 <code>top</code> 参数小为止。在循环内 <code>(w, h)</code> 表示图像金字塔前一层的图像缩小 <code>ratio</code> 倍的宽和高。我们使用 <code>cv2.resize</code> 方法将前一层图片进行缩放，我们将 <code>(w, h)</code> 作为函数的第二个参数，表示缩放后图片的宽和高的值。</p><p>随着图片的尺寸不断缩小，我们使用 <code>if</code> 语句判断图片的尺寸是否已经到达了设定的最小尺寸，将每次图片缩放后的宽和高与设定的最小尺寸 <code>top</code> 进行对比，如果小于最小尺寸则使用 <code>break</code> 结束循环。最后使用 <code>yield</code> 生成器返回每次缩放后的图片。至此图像金字塔的函数就构建完成了。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 目标检测笔记 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 目标检测 </tag>
+            
+            <tag> 计算机视觉 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>目标检测介绍和滑动窗口</title>
+      <link href="/2021/05/28/%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B%E4%BB%8B%E7%BB%8D%E5%92%8C%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3/"/>
+      <url>/2021/05/28/%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B%E4%BB%8B%E7%BB%8D%E5%92%8C%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3/</url>
+      
+        <content type="html"><![CDATA[<h2 id="目标检测介绍"><a href="#目标检测介绍" class="headerlink" title="目标检测介绍"></a>目标检测介绍</h2><p>目标检测是计算机视觉中一个重要的研究方向。人眼可以轻松、准确地识别出图片中的物体是什么、这个物体在图片中的哪个位置。</p><p>例如，当我们看到下图左边的图片时，我们可以轻松的识别出图片中的动物是猫和狗，并且知道它们在图片中所处的位置。但是对于计算机来说，在以数字形式表示的图片中寻找目标物体，并判断这个物体是什么，这是一件困难的事情。目标检测的目的就是使计算机能够识别图片中的目标（物体、动物等）是什么、这个目标的位置在哪里。如下右边的图片所示，通过检测算法的帮助，计算机不仅能识别出图中的动物，还可以标记出其所处的位置。</p><p><img src="https://wyr-image.oss-cn-beijing.aliyuncs.com/img/efe45034c66597c795e32f33482efe2a-0.png"></p><p>目标检测的发展可以分为两个阶段：传统检测算法和基于深度学习的检测算法。</p><p>传统的目标检测算法是通过将人为设计的目标特征和机器学习的分类器相结合来实现的。</p><p>基于深度学习的检测算法可分为两类，一类是使用基于候选区域（Region Proposal）的方法先找出图片中可能存在目标的区域，然后通过卷积神经网络对该区域进行分类；另一类是直接使用卷积神经网络预测目标所属类别的概率和其在图片中的位置坐标。</p><p>由于深度学习的崛起，推动了目标检测的快速发展和应用，如今目标检测已经广泛的应用于我们的日常生活中，如自动驾驶、安保监控、医疗影像、机器视觉等领域。虽然目标检测在发展过程中取得了很多成果，但同时也面临很多挑战，例如目标检测在实时性、抗干扰性、工业的大规模应用等方面还存在很多阻碍。</p><h2 id="滑动窗口（Sliding-Windows）"><a href="#滑动窗口（Sliding-Windows）" class="headerlink" title="滑动窗口（Sliding Windows）"></a>滑动窗口（Sliding Windows）</h2><p>当我们构建一个传统的目标检测方法时，首先需要提供待检测图片，然后将滑动窗口（Sliding Windows）和图像金字塔（Image Pyramid）这两种方法相结合，从图片中选择出一些区域。接下来通过一些算法提取出这些区域的特征信息，然后通过机器学习的分类器对提取的特征分类。目标检测的输出结果一般是使用矩形框标记出要检测的目标，但是使用滑动窗口和图像金字塔时在同一个目标上会标记出多个矩形框，所以我们需要使用非极大值抑制（Non-maxima suppression）来剔除多余的矩形框，确保每个目标只用一个矩形框标记。在接下来的几节实验课程，我们将逐一学习上述内容提到的方法。</p><p>滑动窗口（Sliding Windows）在目标检测过程中的作用是定位目标（物体、动物等）在图片中的位置。在计算机视觉中滑动窗口是一个矩形框，它沿着从左向右、从上向下的方向在图片上<strong>滑动</strong>以达到提取出图片中每一个区域的目的。下图就是一个滑动窗口的例子，可以看到一个绿色矩形框沿着从左向右、从上向下的方向在图片上<strong>滑动</strong>。对于矩形框滑过的每一区域，我们使用分类器来判断该区域中是否存在物体。</p><p><img src="https://wyr-image.oss-cn-beijing.aliyuncs.com/img/8f85dd0b8a04a8dbcefdc21858b932d2-0.gif"></p><h3 id="代码实现"><a href="#代码实现" class="headerlink" title="代码实现"></a>代码实现</h3><p>然后我们定义一个函数 <code>sliding_window</code> 用于获取滑动窗口。这个函数有三个参数 <code>image</code>、<code>window</code> 和 <code>step</code></p><ul><li>第一个参数 <code>image</code> 是输入函数的图片，我们将用矩形框在这个图片上滑动。</li><li>第二个参数 <code>window</code> 是一个元组，表示滑动的矩形框的高和宽。</li><li>第三个参数 <code>step</code> 表示矩形框间隔多少个像素移动一次，这里我们可以称之为<strong>步长</strong>。</li></ul><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">sliding_window</span>(<span class="params">image, window, step</span>):</span><br><span class="line">    <span class="keyword">for</span> y <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">0</span>, image.shape[<span class="number">0</span>] - window[<span class="number">1</span>], step):</span><br><span class="line">        <span class="keyword">for</span> x <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">0</span>, image.shape[<span class="number">1</span>] - window[<span class="number">0</span>], step):</span><br><span class="line">            <span class="keyword">yield</span> (x, y, image[y:y + window[<span class="number">1</span>], x:x + window[<span class="number">0</span>]]) </span><br></pre></td></tr></table></figure>]]></content>
+      
+      
+      <categories>
+          
+          <category> 目标检测笔记 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 目标检测 </tag>
+            
+            <tag> 计算机视觉 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
   
   
 </search>
