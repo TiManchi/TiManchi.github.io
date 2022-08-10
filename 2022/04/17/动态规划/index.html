@@ -1,0 +1,206 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>动态规划 | Wang Yiran</title><meta name="keywords" content="动态规划"><meta name="author" content="Wang Yiran"><meta name="copyright" content="Wang Yiran"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="介绍 动态规划（Dynamic Programming，DP）是运筹学的一个分支，是求解决策过程最优化的过程。20 世纪 50 年代初，美国数学家贝尔曼（R.Bellman）等人在研究多阶段决策过程的优化问题时，提出了著名的最优化原理，从而创立了动态规划。动态规划的应用极其广泛，包括工程技术、经济、工业生产、军事以及自动化控制等领域，并在背包问题、生产经营问题、资金管理问题、资源分配问题、最短路径">
+<meta property="og:type" content="article">
+<meta property="og:title" content="动态规划">
+<meta property="og:url" content="https://timanchi.github.io/2022/04/17/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92/index.html">
+<meta property="og:site_name" content="Wang Yiran">
+<meta property="og:description" content="介绍 动态规划（Dynamic Programming，DP）是运筹学的一个分支，是求解决策过程最优化的过程。20 世纪 50 年代初，美国数学家贝尔曼（R.Bellman）等人在研究多阶段决策过程的优化问题时，提出了著名的最优化原理，从而创立了动态规划。动态规划的应用极其广泛，包括工程技术、经济、工业生产、军事以及自动化控制等领域，并在背包问题、生产经营问题、资金管理问题、资源分配问题、最短路径">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://images.weserv.nl/?url=https://article.biliimg.com/bfs/article/554584218db9279874e48559f9a8e86b9ecca94b.jpg">
+<meta property="article:published_time" content="2022-04-16T16:00:00.000Z">
+<meta property="article:modified_time" content="2022-08-10T12:24:26.367Z">
+<meta property="article:author" content="Wang Yiran">
+<meta property="article:tag" content="动态规划">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://images.weserv.nl/?url=https://article.biliimg.com/bfs/article/554584218db9279874e48559f9a8e86b9ecca94b.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://timanchi.github.io/2022/04/17/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: true
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '动态规划',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2022-08-10 20:24:26'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.2.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://wyr-image.oss-cn-beijing.aliyuncs.com/img/bd5e70c725673e6eeca43c65ed22eade.jpeg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">16</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">12</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">2</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://images.weserv.nl/?url=https://article.biliimg.com/bfs/article/554584218db9279874e48559f9a8e86b9ecca94b.jpg')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">Wang Yiran</a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">动态规划</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="fa-fw post-meta-icon far fa-calendar-alt"></i><span class="post-meta-label">发表于</span><time datetime="2022-04-16T16:00:00.000Z" title="发表于 2022-04-17 00:00:00">2022-04-17</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/">数据结构与算法</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="动态规划"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h2 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h2><blockquote>
+<p>动态规划（Dynamic Programming，DP）是运筹学的一个分支，是求解决策过程最优化的过程。20 世纪 50 年代初，美国数学家贝尔曼（R.Bellman）等人在研究多阶段决策过程的优化问题时，提出了著名的最优化原理，从而创立了动态规划。动态规划的应用极其广泛，包括工程技术、经济、工业生产、军事以及自动化控制等领域，并在背包问题、生产经营问题、资金管理问题、资源分配问题、最短路径问题和复杂系统可靠性问题等中取得了显著的效果。(来自百度百科)</p>
+</blockquote>
+<p>简单来说，就是把问题分成多个阶段，每个阶段都符合一个式子（状态转移），后面阶段的状态（结果）一般可以由前面阶段的状态（结果）转移而来。</p>
+<p>找出状态转移方程，动态规划已经成功了 90%。使用动态规划求解时，最关键的是找出状态转移方程，而想要找出状态转移方程，首先要对问题状态有清晰的定义。一般来说，动态规划求解主要包括以下步骤：</p>
+<ul>
+<li>划分阶段：把问题划分成子问题，类似于分治法，每个阶段一般是有序的。</li>
+<li>定义状态：每个阶段，都有属于自己的最优状态，每一个阶段的最优状态，可以从前面阶段的最优状态中转化获得。</li>
+<li>状态转化：不同阶段之间的转化关系，就是状态转移方程，定义好它们之间的递推关系，就是极其重要的一步。</li>
+<li>逆向求解：一般来说我们要求解一个状态，需要先把前面的状态先求解。那么逆向就是自底向上，也就是先挨个把前面的状态求解，再使用前面的状态求解后面的状态。（注意最初的状态定义必须准确，边界值需要处理好）</li>
+</ul>
+<p>动态规划一般是用来求解最优解的，这类问题一般有很多种解，但是我们期望的是找出其中的一个最优解。动态规划的厉害之处，在于分解大的问题，并且找出了递推的式子，能够利用前面的状态不断求解出后面的状态。</p>
+<h2 id="零钱兑换"><a href="#零钱兑换" class="headerlink" title="零钱兑换"></a>零钱兑换</h2><h3 id="问题描述"><a href="#问题描述" class="headerlink" title="问题描述"></a>问题描述</h3><p>给定不同面额的硬币 coins 和一个总金额 amount，需要你编写一个函数计算可以凑成总金额所需的最少的硬币个数。如果没有任何一种硬币组合能组成总金额，则返回 -1。你可以认为每种硬币的数量是无限的。</p>
+<p>输入：coins &#x3D; [1, 2, 5]，amount &#x3D; 11</p>
+<p>输出：3</p>
+<p>解释：11 元可以拆分为 5 + 5 + 1，这是最少的硬币数目。</p>
+<h3 id="求解思路"><a href="#求解思路" class="headerlink" title="求解思路"></a>求解思路</h3><p>利用 DP 求解问题时，不要一开始就去想第一步具体做什么！那么应该从哪里着手呢？答案是：最后一步！</p>
+<p>兑换硬币的时候，假设每一步操作总是选择一个硬币，那么我们看一下最后一步如何达到 amount？</p>
+<p>以给定的输入为例：</p>
+<blockquote>
+<p>coins &#x3D; [1, 2, 5], amount &#x3D; 11</p>
+</blockquote>
+<p>最后一步可以通过以下 3 个选项得到：</p>
+<p>已经用硬币兑换好了 10 元，再添加 1 个 1 元的硬币，凑成 11 元；</p>
+<p>已经用硬币兑换好了 9 元，再添加 1 个 2 元的硬币，凑成 11 元；</p>
+<p>已经用硬币兑换好了 6 元，再添加 1 个 5 元的硬币，凑成 11 元。</p>
+<p>接下来，应该立即将以上 3 个选项中的未知项展开成子问题！</p>
+<p><strong>子问题</strong></p>
+<p>拿到 3 个选项之后，你可能会想：[10元，9元，6元] 是如何得到？到此时，一定不要尝试递归地去求解 10 元、9 元、6 元，正确的做法是将它们表达为 3 个子问题：</p>
+<p>如何利用最少的硬币组成 10 元？</p>
+<p>如何利用最少的硬币组成 9 元？</p>
+<p>如何利用最少的硬币组成 6 元？</p>
+<p>我们原来的问题是，如何用最少的硬币组成 11 元。</p>
+<p>不难发现，如果用 f(x) 表示如何利用最少的硬币组成 x 元，就可以用 f(x) 将原问题与 3 个子问题统一起来，得到如下内容：</p>
+<p>原问题表达为 f(11)；</p>
+<p>3 个子问题分别表达为 f(10)、f(9)、f(6)。</p>
+<p>接下来我们再利用 f(x) 表示最后一步的 3 个选项：</p>
+<p>f(10) + 1 个 1 元得到 f(11)；</p>
+<p>f(9) + 1 个 2 元得到 f(11)；</p>
+<p>f(6) + 1 个 5 元得到 f(11)。</p>
+<p><strong>递推关系</strong></p>
+<p>最后一步，可以通过 3 个选项得到。哪一个选项才是最少的步骤呢？这个时候，我们可以采用一个 min 函数来从这 3 个选项中得到最小值。</p>
+<p>f(11) &#x3D; min(f(11-1), f(11-2), f(11-5)) + 1</p>
+<p>接下来，第一次替换：只需要将 11 换成一个更普通的值，就可以得到更加通用的递推关系：</p>
+<p>f(x) &#x3D; min(f(x-1), f(x-2), f(x-5)) + 1</p>
+<p>当然，这里 [1, 2, 5] 我们依然使用的是输入示例，进行第二次替换：</p>
+<p>f(x) &#x3D; min(f(x-y), y in coins) + 1</p>
+<h3 id="代码实现"><a href="#代码实现" class="headerlink" title="代码实现"></a>代码实现</h3><figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> &#123;<span class="type">number[]</span>&#125; <span class="variable">coins</span></span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> &#123;<span class="type">number</span>&#125; <span class="variable">amount</span></span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span> &#123;<span class="type">number</span>&#125;</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"> <span class="keyword">var</span> coinChange = <span class="keyword">function</span>(<span class="params">coins, amount</span>) &#123;</span><br><span class="line">    <span class="keyword">const</span> f=[]</span><br><span class="line">    f[<span class="number">0</span>]=<span class="number">0</span></span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">let</span> i=<span class="number">1</span>;i&lt;=amount;i++)&#123;</span><br><span class="line">        f[i]=<span class="title class_">Infinity</span></span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">let</span> j=<span class="number">0</span>;j&lt;coins.<span class="property">length</span>;j++)&#123;</span><br><span class="line">            <span class="keyword">if</span>(i-coins[j]&gt;=<span class="number">0</span>)&#123;</span><br><span class="line">                f[i]=<span class="title class_">Math</span>.<span class="title function_">min</span>(f[i],f[i-coins[j]]+<span class="number">1</span>)</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span>(f[amount]===<span class="title class_">Infinity</span>)&#123;</span><br><span class="line">        <span class="keyword">return</span> -<span class="number">1</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> f[amount]</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<h2 id="分割等和子集"><a href="#分割等和子集" class="headerlink" title="分割等和子集"></a>分割等和子集</h2><h3 id="问题描述-1"><a href="#问题描述-1" class="headerlink" title="问题描述"></a>问题描述</h3><p>一个只包含正整数的非空数组。是否可以将这个数组分割成两个子集，使得两个子集的元素和相等。</p>
+<p>注意: 1）每个数组中的元素不会超过 100；2）数组的大小不会超过 200</p>
+<p>输入：A &#x3D; [2, 2]</p>
+<p>输出：true</p>
+<p>解释：可以将这个数组分成 [2], [2] 这两个子集和是相等的。</p>
+<h3 id="求解思路-1"><a href="#求解思路-1" class="headerlink" title="求解思路"></a>求解思路</h3><p>由于分出来的两个子集和要求是相等的，如果整个数组和为奇数，那么没有讨论的必要。这里我们只讨论 sum(A) &#x3D; 2 x V 的情况。也就是分出来的两个子集，其和分别为 V。</p>
+<p>这个问题，也可以想象成：</p>
+<blockquote>
+<p>有一个容量为 V 的背包，给你一些石头，石头的大小放在数组 A[] 中，现在需要捡一些石头，刚好装满容量为 V 的背包。（你可以不去考虑填充的时候的缝隙）</p>
+</blockquote>
+<h3 id="代码实现-1"><a href="#代码实现-1" class="headerlink" title="代码实现"></a>代码实现</h3><figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> canPartition=<span class="keyword">function</span>(<span class="params">nums</span>)&#123;</span><br><span class="line">    <span class="keyword">let</span> sum=<span class="number">0</span></span><br><span class="line">    <span class="keyword">let</span> len=nums.<span class="property">length</span></span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">let</span> i=<span class="number">0</span>;i&lt;len;i++)&#123;</span><br><span class="line">         sum+=nums[i]</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span>(sum%<span class="number">2</span>!==<span class="number">0</span>)&#123;</span><br><span class="line">         <span class="keyword">return</span> <span class="literal">false</span></span><br><span class="line">     &#125;</span><br><span class="line">     <span class="keyword">let</span> target=sum/<span class="number">2</span></span><br><span class="line">     <span class="comment">//状态定义：dp[i][j]表示从数组的 [0, i] 这个子区间内挑选一些正整数，每个数只能用一次，使得这些数的和恰好等于 j。</span></span><br><span class="line">     <span class="keyword">const</span> dp= <span class="keyword">new</span> <span class="title class_">Array</span>(len).<span class="title function_">fill</span>(<span class="number">0</span>).<span class="title function_">map</span>(<span class="function">() =&gt;</span> <span class="keyword">new</span> <span class="title class_">Array</span>(target+<span class="number">1</span>).<span class="title function_">fill</span>(<span class="literal">false</span>))</span><br><span class="line">     <span class="keyword">if</span> (nums[<span class="number">0</span>] &lt;= target) &#123;</span><br><span class="line">        dp[<span class="number">0</span>][nums[<span class="number">0</span>]] = <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">let</span> i=<span class="number">1</span>;i&lt;len;i++)&#123;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">let</span> j=<span class="number">0</span>;j&lt;=target;j++)&#123;</span><br><span class="line">            dp[i][j]=dp[i-<span class="number">1</span>][j]</span><br><span class="line">            <span class="keyword">if</span>(nums[i]==j)&#123;</span><br><span class="line">                dp[i][j]=<span class="literal">true</span></span><br><span class="line">                <span class="keyword">continue</span></span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span>(nums[i]&lt;j)&#123;</span><br><span class="line">                dp[i][j] = dp[i - <span class="number">1</span>][j] || dp[i - <span class="number">1</span>][j - nums[i]];</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> dp[len - <span class="number">1</span>][target];</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="https://timanchi.github.io">Wang Yiran</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://timanchi.github.io/2022/04/17/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92/">https://timanchi.github.io/2022/04/17/动态规划/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://timanchi.github.io" target="_blank">Wang Yiran</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92/">动态规划</a></div><div class="post_share"><div class="social-share" data-image="https://images.weserv.nl/?url=https://article.biliimg.com/bfs/article/554584218db9279874e48559f9a8e86b9ecca94b.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2022/04/13/%E8%B4%AA%E5%BF%83%E7%AE%97%E6%B3%95/"><img class="next-cover" src="https://images.weserv.nl/?url=https://article.biliimg.com/bfs/article/554584218db9279874e48559f9a8e86b9ecca94b.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">贪心算法</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://wyr-image.oss-cn-beijing.aliyuncs.com/img/bd5e70c725673e6eeca43c65ed22eade.jpeg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Wang Yiran</div><div class="author-info__description"></div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">16</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">12</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">2</div></a></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%8B%E7%BB%8D"><span class="toc-number">1.</span> <span class="toc-text">介绍</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%9B%B6%E9%92%B1%E5%85%91%E6%8D%A2"><span class="toc-number">2.</span> <span class="toc-text">零钱兑换</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%97%AE%E9%A2%98%E6%8F%8F%E8%BF%B0"><span class="toc-number">2.1.</span> <span class="toc-text">问题描述</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B1%82%E8%A7%A3%E6%80%9D%E8%B7%AF"><span class="toc-number">2.2.</span> <span class="toc-text">求解思路</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0"><span class="toc-number">2.3.</span> <span class="toc-text">代码实现</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%86%E5%89%B2%E7%AD%89%E5%92%8C%E5%AD%90%E9%9B%86"><span class="toc-number">3.</span> <span class="toc-text">分割等和子集</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%97%AE%E9%A2%98%E6%8F%8F%E8%BF%B0-1"><span class="toc-number">3.1.</span> <span class="toc-text">问题描述</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B1%82%E8%A7%A3%E6%80%9D%E8%B7%AF-1"><span class="toc-number">3.2.</span> <span class="toc-text">求解思路</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0-1"><span class="toc-number">3.3.</span> <span class="toc-text">代码实现</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2022/04/17/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92/" title="动态规划"><img src="https://images.weserv.nl/?url=https://article.biliimg.com/bfs/article/554584218db9279874e48559f9a8e86b9ecca94b.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="动态规划"/></a><div class="content"><a class="title" href="/2022/04/17/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92/" title="动态规划">动态规划</a><time datetime="2022-04-16T16:00:00.000Z" title="发表于 2022-04-17 00:00:00">2022-04-17</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/04/13/%E8%B4%AA%E5%BF%83%E7%AE%97%E6%B3%95/" title="贪心算法"><img src="https://images.weserv.nl/?url=https://article.biliimg.com/bfs/article/554584218db9279874e48559f9a8e86b9ecca94b.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="贪心算法"/></a><div class="content"><a class="title" href="/2022/04/13/%E8%B4%AA%E5%BF%83%E7%AE%97%E6%B3%95/" title="贪心算法">贪心算法</a><time datetime="2022-04-12T16:00:00.000Z" title="发表于 2022-04-13 00:00:00">2022-04-13</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/04/12/%E5%9B%9E%E6%BA%AF%E7%AE%97%E6%B3%95/" title="回溯算法"><img src="https://images.weserv.nl/?url=https://article.biliimg.com/bfs/article/554584218db9279874e48559f9a8e86b9ecca94b.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="回溯算法"/></a><div class="content"><a class="title" href="/2022/04/12/%E5%9B%9E%E6%BA%AF%E7%AE%97%E6%B3%95/" title="回溯算法">回溯算法</a><time datetime="2022-04-11T16:00:00.000Z" title="发表于 2022-04-12 00:00:00">2022-04-12</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/04/11/%E6%9F%A5%E6%89%BE%E4%B8%8E%E6%90%9C%E7%B4%A2/" title="查找与搜索"><img src="https://images.weserv.nl/?url=https://article.biliimg.com/bfs/article/554584218db9279874e48559f9a8e86b9ecca94b.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="查找与搜索"/></a><div class="content"><a class="title" href="/2022/04/11/%E6%9F%A5%E6%89%BE%E4%B8%8E%E6%90%9C%E7%B4%A2/" title="查找与搜索">查找与搜索</a><time datetime="2022-04-10T16:00:00.000Z" title="发表于 2022-04-11 00:00:00">2022-04-11</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/04/09/%E6%A0%91%E7%BB%93%E6%9E%84/" title="树结构的常见题型"><img src="https://images.weserv.nl/?url=https://article.biliimg.com/bfs/article/554584218db9279874e48559f9a8e86b9ecca94b.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="树结构的常见题型"/></a><div class="content"><a class="title" href="/2022/04/09/%E6%A0%91%E7%BB%93%E6%9E%84/" title="树结构的常见题型">树结构的常见题型</a><time datetime="2022-04-08T16:00:00.000Z" title="发表于 2022-04-09 00:00:00">2022-04-09</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url('https://images.weserv.nl/?url=https://article.biliimg.com/bfs/article/554584218db9279874e48559f9a8e86b9ecca94b.jpg')"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2022 By Wang Yiran</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div></div></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><script src="/js/search/local-search.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
